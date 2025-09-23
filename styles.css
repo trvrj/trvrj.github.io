@@ -116,6 +116,11 @@ a:hover {
     color: #60a5fa;
 }
 
+/* Custom color for specific app/project names */
+.app-name {
+    color: #009E60;
+}
+
 /* Responsive design for different screen widths */
 @media (min-width: 1400px) {
     main {
