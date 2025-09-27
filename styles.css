@@ -126,7 +126,8 @@ a:hover {
 @media (max-width: 768px) {
     main {
         width: 90%;
-        padding: 20px 0;
+        padding: 20px 20px;
+        margin: 0 auto;
     }
     
     body {
@@ -146,7 +147,8 @@ a:hover {
 @media (max-width: 480px) {
     main {
         width: 95%;
-        padding: 15px 0;
+        padding: 15px 15px;
+        margin: 0 auto;
     }
     
     body {
