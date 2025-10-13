@@ -76,6 +76,16 @@ a:hover {
     opacity: 0.8;
 }
 
+.screenshots-vertical {
+    flex-direction: column;
+    gap: 15px;
+}
+
+.screenshots-vertical img {
+    width: 100%;
+    max-width: 100%;
+}
+
 .screenshot-placeholder {
     width: 33.33%;
     height: 150px;
