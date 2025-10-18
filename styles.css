@@ -232,3 +232,9 @@ a:hover {
         width: 20%;
     }
 }
+
+/* Footer links */
+.footer-links {
+    text-align: center;
+    margin: 10px 0 0 0;
+}
