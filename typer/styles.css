@@ -1,0 +1,333 @@
+/* Page-specific styles for /typer */
+
+/* Typewriter line overlays (middle band = “2nd line” from top). */
+:root {
+    /* Top band: slightly lighter than before so glyphs don’t read as “smaller” under the overlay. */
+    --tw-line1-overlay: 0.86;
+    --tw-line2-overlay: 0.72;
+    --tw-line3-overlay: 0.4;
+}
+
+body {
+    background-color: #000;
+}
+
+.typer-desk-body {
+    padding-top: 0;
+}
+
+.typer-main {
+    width: 60%;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.typer-header {
+    text-align: center;
+}
+
+.typer-title {
+    margin: 0 0 10px 0;
+    font-weight: normal;
+}
+
+.typer-root {
+    margin-top: 10px;
+    min-height: 60vh;
+    padding: 30px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.typer-intro {
+    max-width: 720px;
+    text-align: center;
+}
+
+.typer-intro p {
+    margin: 0 0 14px 0;
+}
+
+.typer-auth-card {
+    max-width: 720px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 26px;
+    background: rgba(2, 6, 23, 0.6);
+    margin-top: 0;
+}
+
+.typer-auth-header {
+    margin: 0 0 18px 0;
+}
+
+.typer-auth-title {
+    margin: 0 0 8px 0;
+    font-weight: normal;
+}
+
+.typer-auth-status p {
+    margin: 0 0 12px 0;
+}
+
+.auth-user {
+    color: #60a5fa;
+}
+
+.typer-auth-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 14px 0 6px 0;
+}
+
+.typer-btn {
+    border: none;
+    background-color: #60a5fa;
+    color: #000;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 12pt;
+    cursor: pointer;
+}
+
+.typer-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.typer-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.typer-btn-secondary {
+    background-color: rgba(96, 165, 250, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.35);
+}
+
+.typer-auth-error {
+    margin: 14px 0 0 0;
+    color: #f87171;
+}
+
+/* Desk (post-auth) */
+.typer-desk-main {
+    width: 100%;
+    max-width: none;
+}
+
+.desk-root {
+    min-height: 80vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0;
+}
+
+.desk-shell {
+    width: 100%;
+}
+
+.desk-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+.desk-toolbar-left,
+.desk-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Match apparent strength of typewriter 2nd line (middle band overlay). */
+    opacity: calc(1 - var(--tw-line2-overlay));
+}
+
+.desk-toolbar-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.desk-hoverbox {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 180px;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: rgba(2, 6, 23, 0.9);
+    color: #d1d5db;
+}
+
+.desk-toolbar-item:hover .desk-hoverbox {
+    display: block;
+}
+
+.desk-hoverbox-title {
+    font-size: 11pt;
+    color: #9ca3af;
+    margin-bottom: 8px;
+}
+
+.desk-hoverbox-value {
+    font-size: 20pt;
+    color: #d1d5db;
+}
+
+.desk-toolbar-btn {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: #d1d5db;
+    font-size: 12pt;
+    padding: 4px 2px;
+    cursor: pointer;
+}
+
+.desk-toolbar-btn:hover {
+    color: #60a5fa;
+    text-decoration: underline;
+}
+
+.desk-toolbar-sep {
+    color: #9ca3af;
+}
+
+/* (placeholder removed; desktop will render here next) */
+
+/* Typewriter (MVP) */
+.typewriter-stage {
+    position: relative;
+    height: calc(100vh - var(--desk-toolbar-height, 56px));
+    padding: 0 300px;
+    box-sizing: border-box;
+}
+
+.typewriter-root {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    isolation: isolate;
+    box-sizing: border-box;
+}
+
+.typewriter-root::after {
+    content: "";
+    position: absolute;
+    /* Match textarea: avoid transform on text stack (reduces “shrunken” glyph look). */
+    top: calc(50% - var(--tw-active-line-offset-px, 50px));
+    height: var(--tw-visible-height-px, 120px);
+    left: 0;
+    right: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* Atmospheric fade: active line ~same brightness as old “middle” line;
+       lines above are darker (more atmospheric). */
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, var(--tw-line1-overlay)) 0%,
+        rgba(0, 0, 0, var(--tw-line1-overlay)) 33.333%,
+        rgba(0, 0, 0, var(--tw-line2-overlay)) 33.333%,
+        rgba(0, 0, 0, var(--tw-line2-overlay)) 66.666%,
+        rgba(0, 0, 0, var(--tw-line3-overlay)) 66.666%,
+        rgba(0, 0, 0, var(--tw-line3-overlay)) 100%
+    );
+}
+
+.typewriter-textarea {
+    position: absolute;
+    top: calc(50% - var(--tw-active-line-offset-px, 50px));
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    resize: none;
+    overflow: hidden;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #d1d5db;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-weight: 400;
+    /* Full-width lines: stretch inter-word space so wrapped lines hit both margins. */
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+    /* Avoid transform blur; keep glyph weight consistent across lines. */
+    transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Unauthorized dialog */
+.typer-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.typer-dialog {
+    width: 100%;
+    max-width: 560px;
+    text-align: center;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 22px;
+    background: rgba(2, 6, 23, 0.9);
+}
+
+.typer-dialog-title {
+    margin: 0 0 10px 0;
+    font-weight: normal;
+}
+
+.typer-dialog-message {
+    margin: 0 0 10px 0;
+    font-size: 12pt;
+}
+
+.typer-dialog-submessage {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 11pt;
+}
+
+.typer-dialog-actions {
+    margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .typer-main {
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .typer-auth-card {
+        margin-top: -20px;
+    }
+
+    .typewriter-stage {
+        padding: 0 20px;
+    }
+}
+

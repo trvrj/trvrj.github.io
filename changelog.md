@@ -7,3 +7,9 @@ linked duos app to play store, added shift worker app and text adventure app to 
 1.0.3+3 (Lenovo - 1.17.26)
 updated the apple app store icon for duos to open listing in new tab
 
+1.0.4+4 (Lenovo - 3.25.26)
+added bastion to apps section, added typer to projects section
+
+1.1.0+5 (Lenovo - 3.25.26)
+working on typer writing environment; setup toolbar, wired up word count, built centered typewriter 
+
