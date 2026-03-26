@@ -6,6 +6,7 @@ export function createTypewriter({ fontSizePx, lineHeight, visibleLines }) {
     textarea.autocapitalize = "off";
     textarea.autocomplete = "off";
     textarea.wrap = "soft";
+    textarea.style.boxSizing = "border-box";
 
     textarea.style.fontSize = `${fontSizePx}px`;
     textarea.style.lineHeight = String(lineHeight);
@@ -16,16 +17,20 @@ export function createTypewriter({ fontSizePx, lineHeight, visibleLines }) {
     const lineHeightPx = fontSizePx * lineHeight;
     const activeLineOffsetPx = Math.round((visibleLines - 0.5) * lineHeightPx);
     const visibleHeightPx = Math.round(visibleLines * lineHeightPx);
+    const initialTopOffsetPx = Math.round((visibleLines - 1) * lineHeightPx);
+    textarea.style.paddingTop = `${initialTopOffsetPx}px`;
+    textarea.style.paddingBottom = "0px";
 
-    function keepBottomLineVisible() {
-        textarea.scrollTop = textarea.scrollHeight;
+    function anchorActiveLine() {
+        const maxScroll = Math.max(0, textarea.scrollHeight - textarea.clientHeight);
+        textarea.scrollTop = maxScroll;
     }
 
-    textarea.addEventListener("input", keepBottomLineVisible);
-    window.addEventListener("resize", keepBottomLineVisible, { passive: true });
+    textarea.addEventListener("input", anchorActiveLine);
+    window.addEventListener("resize", anchorActiveLine, { passive: true });
 
     // Initial positioning
-    queueMicrotask(keepBottomLineVisible);
+    queueMicrotask(anchorActiveLine);
 
     return {
         el: textarea,
@@ -37,11 +42,11 @@ export function createTypewriter({ fontSizePx, lineHeight, visibleLines }) {
         getValue: () => textarea.value,
         setValue: (v) => {
             textarea.value = String(v ?? "");
-            keepBottomLineVisible();
+            anchorActiveLine();
         },
         destroy: () => {
-            textarea.removeEventListener("input", keepBottomLineVisible);
-            window.removeEventListener("resize", keepBottomLineVisible);
+            textarea.removeEventListener("input", anchorActiveLine);
+            window.removeEventListener("resize", anchorActiveLine);
         },
     };
 }

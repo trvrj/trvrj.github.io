@@ -104,14 +104,14 @@ function renderDesk(root) {
                     <span class="desk-toolbar-sep">|</span>
                     <div class="desk-toolbar-item">
                         <button class="desk-toolbar-btn" type="button" data-action="word-count">Word Count</button>
-                        <div class="desk-hoverbox" role="status" aria-live="polite">
+                        <div class="desk-hoverbox desk-metric-hoverbox" role="status" aria-live="polite">
                             <div class="desk-hoverbox-value" id="word-count-value">0</div>
                         </div>
                     </div>
                     <span class="desk-toolbar-sep">|</span>
                     <div class="desk-toolbar-item">
                         <button class="desk-toolbar-btn" type="button" data-action="word-count-goal">Word Count Goal</button>
-                        <div class="desk-hoverbox" id="word-goal-hoverbox" role="status" aria-live="polite">
+                        <div class="desk-hoverbox desk-metric-hoverbox" id="word-goal-hoverbox" role="status" aria-live="polite">
                             <div class="desk-hoverbox-value" id="word-goal-value">0</div>
                         </div>
                     </div>
@@ -193,7 +193,7 @@ function renderDesk(root) {
             >
                 <div class="write-overlay-inner">
                     <h2 class="write-overlay-heading" id="goal-overlay-heading">Word count goal</h2>
-                    <label class="write-overlay-label" for="goal-input">Words to add</label>
+                    <label class="write-overlay-label" for="goal-input">Word count target</label>
                     <input
                         class="write-overlay-input"
                         type="number"
@@ -293,9 +293,17 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         let pomodoroFlashTimer = null;
 
         const wordCountEl = root.querySelector("#word-count-value");
+        const wordGoalToolbarBtn = root.querySelector('[data-action="word-count-goal"]');
+        const wordGoalToolbarItem = wordGoalToolbarBtn?.closest?.(".desk-toolbar-item") ?? null;
         const wordGoalHoverbox = root.querySelector("#word-goal-hoverbox");
         const wordGoalValueEl = root.querySelector("#word-goal-value");
         const lastSavedEl = root.querySelector("#last-saved-status");
+        const lastSavedLineEl = lastSavedEl?.closest?.(".desk-doc-title-saved") ?? null;
+
+        function setLastSavedHidden(isHidden) {
+            if (!lastSavedLineEl) return;
+            lastSavedLineEl.classList.toggle("desk-doc-title-saved--hidden", isHidden);
+        }
 
         function hideWordGoalReveal() {
             if (goalRevealTimer) {
@@ -303,6 +311,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 goalRevealTimer = null;
             }
             wordGoalHoverbox?.classList.remove("desk-hoverbox--visible");
+            setLastSavedHidden(false);
         }
 
         function maybeShowWordGoalReveal(currentCount) {
@@ -323,8 +332,10 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 wordGoalValueEl.textContent = String(wordGoalDelta);
             }
             wordGoalHoverbox?.classList.add("desk-hoverbox--visible");
+            setLastSavedHidden(true);
             goalRevealTimer = window.setTimeout(() => {
                 wordGoalHoverbox?.classList.remove("desk-hoverbox--visible");
+                setLastSavedHidden(false);
                 goalRevealTimer = null;
             }, 3000);
         }
@@ -337,6 +348,10 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         };
         updateWordCount();
         if (tw?.el) tw.el.addEventListener("input", updateWordCount);
+        wordGoalToolbarItem?.addEventListener("mouseenter", () => setLastSavedHidden(true));
+        wordGoalToolbarItem?.addEventListener("mouseleave", () => {
+            if (!goalRevealTimer) setLastSavedHidden(false);
+        });
 
         const docTitleBar = root.querySelector("#desk-doc-title-bar");
         const docTitleText = root.querySelector("#desk-doc-title-text");
@@ -442,6 +457,9 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             wordGoalDelta = parsed;
             wordGoalTarget = currentCount + parsed;
             wordGoalDocId = activeDocId;
+            if (wordGoalValueEl) {
+                wordGoalValueEl.textContent = String(parsed);
+            }
             goalShownForTarget = null;
             hideWordGoalReveal();
             closeGoalOverlay();

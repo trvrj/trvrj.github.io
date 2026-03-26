@@ -25,3 +25,8 @@ add word count goal feature
 1.2.3+9 (Lenovo - 3.26.26)
 add pomodoro timer feature
 
+1.2.3+10 (Lenovo - 3.26.26)
+continuing to work on pomodoro timer
+
+1.2.4+11 (Lenovo - 3.26.26)
+refactor typewriter, ui changes
