@@ -89,6 +89,10 @@ function renderDesk(root) {
                             aria-expanded="false"
                             aria-controls="pomodoro-panel"
                         >Pomodoro</button>
+                        <div class="desk-hoverbox pomodoro-status-hoverbox" id="pomodoro-status-hoverbox" role="status" aria-live="polite">
+                            <div class="pomodoro-status-phase" id="pomodoro-status-phase">Write</div>
+                            <div class="pomodoro-status-time" id="pomodoro-status-time">25:00</div>
+                        </div>
                         <div
                             class="desk-popover"
                             id="pomodoro-panel"
@@ -286,6 +290,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         let pomodoroRunning = false;
         let pomodoroIntervalId = null;
         let pomodoroError = "";
+        let pomodoroFlashTimer = null;
 
         const wordCountEl = root.querySelector("#word-count-value");
         const wordGoalHoverbox = root.querySelector("#word-goal-hoverbox");
@@ -321,7 +326,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             goalRevealTimer = window.setTimeout(() => {
                 wordGoalHoverbox?.classList.remove("desk-hoverbox--visible");
                 goalRevealTimer = null;
-            }, 2000);
+            }, 3000);
         }
 
         const updateWordCount = () => {
@@ -602,18 +607,21 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             () => {
                 window.clearInterval(autosaveTimer);
                 clearPomodoroInterval();
+                clearPomodoroFlashTimer();
             },
             { once: true },
         );
 
         const pomodoroPanel = root.querySelector("#pomodoro-panel");
         const pomodoroBtn = root.querySelector("#pomodoro-btn");
+        const pomodoroStatusHoverbox = root.querySelector("#pomodoro-status-hoverbox");
+        const pomodoroStatusPhaseEl = root.querySelector("#pomodoro-status-phase");
+        const pomodoroStatusTimeEl = root.querySelector("#pomodoro-status-time");
         const focusBtn = root.querySelector("#focus-btn");
 
         function getPomodoroPhaseLabel(phase) {
-            if (phase === "break") return "Break";
-            if (phase === "longBreak") return "Long break";
-            return "Work";
+            if (phase === "break" || phase === "longBreak") return "Break";
+            return "Write";
         }
 
         function clearPomodoroInterval() {
@@ -622,12 +630,37 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             pomodoroIntervalId = null;
         }
 
+        function clearPomodoroFlashTimer() {
+            if (!pomodoroFlashTimer) return;
+            window.clearTimeout(pomodoroFlashTimer);
+            pomodoroFlashTimer = null;
+        }
+
+        function syncPomodoroStatusHoverbox() {
+            if (pomodoroStatusPhaseEl) pomodoroStatusPhaseEl.textContent = getPomodoroPhaseLabel(pomodoroPhase);
+            if (pomodoroStatusTimeEl) pomodoroStatusTimeEl.textContent = formatMmSs(pomodoroRemainingSeconds);
+        }
+
+        function flashPomodoroStatusHoverbox() {
+            if (!pomodoroStatusHoverbox) return;
+            clearPomodoroFlashTimer();
+            pomodoroStatusHoverbox.classList.remove("pomodoro-status-hoverbox--flash");
+            pomodoroStatusHoverbox.classList.add("desk-hoverbox--visible", "pomodoro-status-hoverbox--flash");
+            pomodoroFlashTimer = window.setTimeout(() => {
+                pomodoroStatusHoverbox.classList.remove("desk-hoverbox--visible", "pomodoro-status-hoverbox--flash");
+                pomodoroFlashTimer = null;
+            }, 3000);
+        }
+
         function resetPomodoroRuntimeState() {
             pomodoroPhase = "work";
             pomodoroCycle = 1;
             pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.workMin);
             pomodoroRunning = false;
             clearPomodoroInterval();
+            clearPomodoroFlashTimer();
+            pomodoroStatusHoverbox?.classList.remove("desk-hoverbox--visible", "pomodoro-status-hoverbox--flash");
+            syncPomodoroStatusHoverbox();
         }
 
         function renderPomodoroPanel() {
@@ -678,16 +711,22 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 if (pomodoroCycle >= POMODORO_SESSION_WORK_CYCLES) {
                     pomodoroPhase = "longBreak";
                     pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.longBreakMin);
+                    syncPomodoroStatusHoverbox();
+                    flashPomodoroStatusHoverbox();
                     return;
                 }
                 pomodoroPhase = "break";
                 pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.breakMin);
+                syncPomodoroStatusHoverbox();
+                flashPomodoroStatusHoverbox();
                 return;
             }
             if (pomodoroPhase === "break") {
                 pomodoroCycle += 1;
                 pomodoroPhase = "work";
                 pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.workMin);
+                syncPomodoroStatusHoverbox();
+                flashPomodoroStatusHoverbox();
                 return;
             }
 
@@ -701,6 +740,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             if (pomodoroRemainingSeconds <= 0) {
                 moveToNextPomodoroPhase();
             }
+            syncPomodoroStatusHoverbox();
             maybeRenderPomodoroPanel();
         }
 
@@ -718,6 +758,8 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             pomodoroRunning = true;
             clearPomodoroInterval();
             pomodoroIntervalId = window.setInterval(tickPomodoro, 1000);
+            syncPomodoroStatusHoverbox();
+            setPomodoroPanelOpen(false);
             maybeRenderPomodoroPanel();
         }
 
@@ -1008,10 +1050,15 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                     e.preventDefault();
                     if (pomodoroPanel) {
                         const shouldOpen = pomodoroPanel.hidden;
+                        if (shouldOpen && pomodoroRunning) {
+                            pomodoroRunning = false;
+                            clearPomodoroInterval();
+                        }
                         setPomodoroPanelOpen(shouldOpen);
                         if (shouldOpen) {
                             pomodoroDraft = { ...pomodoroConfig };
                             pomodoroError = "";
+                            syncPomodoroStatusHoverbox();
                             renderPomodoroPanel();
                         }
                     }
@@ -1063,6 +1110,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 if (action === "logout") {
                     window.clearInterval(autosaveTimer);
                     clearPomodoroInterval();
+                    clearPomodoroFlashTimer();
                     try {
                         await signOutUser();
                     } finally {

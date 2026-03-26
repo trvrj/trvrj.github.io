@@ -14,4 +14,14 @@ added bastion to apps section, added typer to projects section
 working on typer writing environment; setup toolbar, wired up word count, built centered typewriter 
 
 1.2.0+6 (Lenovo - 3.25.26)
-add focus mode to dim everything and make page full screen, wire up read to open overlay with current doc, change write to new and add title input, add open to choose file from firestore
+add focus mode to dim everything and make page full screen, wire up read to open overlay with current doc, change write to new and add title input, add open to choose file from firestore, added word count target tool and notification
+
+1.2.1+7 (Lenovo - 3.25.26)
+lindsey commit for me
+
+1.2.2+8 (Lenovo - 3.25.26)
+add word count goal feature
+
+1.2.3+9 (Lenovo - 3.26.26)
+add pomodoro timer feature
+

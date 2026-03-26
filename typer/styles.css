@@ -228,6 +228,39 @@ html:has(body.typer-desk-body) {
     min-width: 280px;
 }
 
+.pomodoro-status-hoverbox {
+    min-width: 130px;
+    text-align: center;
+}
+
+.pomodoro-status-phase {
+    font-size: 10pt;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.pomodoro-status-time {
+    font-size: 16pt;
+    letter-spacing: 0.04em;
+    color: #e0e0e4;
+}
+
+.pomodoro-status-hoverbox--flash {
+    animation: pomodoroHoverFlash 0.6s ease-in-out 1;
+}
+
+@keyframes pomodoroHoverFlash {
+    0% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.9;
+    }
+}
+
 .pomodoro-panel-heading {
     font-size: 12pt;
     margin-bottom: 10px;
