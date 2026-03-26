@@ -13,3 +13,5 @@ added bastion to apps section, added typer to projects section
 1.1.0+5 (Lenovo - 3.25.26)
 working on typer writing environment; setup toolbar, wired up word count, built centered typewriter 
 
+1.2.0+6 (Lenovo - 3.25.26)
+add focus mode to dim everything and make page full screen, wire up read to open overlay with current doc, change write to new and add title input, add open to choose file from firestore
