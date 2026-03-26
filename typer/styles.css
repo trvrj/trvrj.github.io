@@ -212,6 +212,10 @@ html:has(body.typer-desk-body) {
     display: block;
 }
 
+.desk-hoverbox--visible {
+    display: block;
+}
+
 .desk-popover {
     min-height: 80px;
 }
@@ -250,7 +254,6 @@ html:has(body.typer-desk-body) {
     flex-shrink: 0;
     text-align: center;
     padding: 8px 18px 10px;
-    border-bottom: 1px solid rgba(51, 65, 85, 0.45);
     transition: opacity 0.2s ease;
     /* No fill — same base as toolbar so title matches toolbar text brightness. */
 }

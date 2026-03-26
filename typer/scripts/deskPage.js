@@ -86,6 +86,13 @@ function renderDesk(root) {
                         </div>
                     </div>
                     <span class="desk-toolbar-sep">|</span>
+                    <div class="desk-toolbar-item">
+                        <button class="desk-toolbar-btn" type="button" data-action="word-count-goal">Word Count Goal</button>
+                        <div class="desk-hoverbox" id="word-goal-hoverbox" role="status" aria-live="polite">
+                            <div class="desk-hoverbox-value" id="word-goal-value">0</div>
+                        </div>
+                    </div>
+                    <span class="desk-toolbar-sep">|</span>
                     <span class="desk-toolbar-saved" aria-live="polite">Last saved: <span id="last-saved-status">—</span></span>
                 </div>
             </div>
@@ -152,6 +159,40 @@ function renderDesk(root) {
             </div>
 
             <div
+                class="write-overlay"
+                id="goal-overlay"
+                hidden
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="goal-overlay-heading"
+                aria-hidden="true"
+            >
+                <div class="write-overlay-inner">
+                    <h2 class="write-overlay-heading" id="goal-overlay-heading">Word count goal</h2>
+                    <label class="write-overlay-label" for="goal-input">Words to add</label>
+                    <input
+                        class="write-overlay-input"
+                        type="number"
+                        id="goal-input"
+                        name="goal-input"
+                        min="1"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="e.g. 250"
+                    />
+                    <p class="write-overlay-error" id="goal-overlay-error" hidden></p>
+                    <div class="write-overlay-actions">
+                        <button type="button" class="desk-toolbar-btn" data-action="goal-overlay-cancel">
+                            Cancel
+                        </button>
+                        <button type="button" class="desk-toolbar-btn" data-action="goal-overlay-confirm">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div
                 class="read-overlay"
                 id="read-overlay"
                 hidden
@@ -208,24 +249,69 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             root: root.querySelector("#typewriter-root"),
         });
 
-        const wordCountEl = root.querySelector("#word-count-value");
-        const lastSavedEl = root.querySelector("#last-saved-status");
-        const updateWordCount = () => {
-            if (!wordCountEl || !tw) return;
-            wordCountEl.textContent = String(countWords(tw.getValue()));
-        };
-        updateWordCount();
-        if (tw?.el) tw.el.addEventListener("input", updateWordCount);
-
         const uid = user.uid;
         let activeDocId = null;
         let lastPersisted = null;
+        let wordGoalDelta = null;
+        let wordGoalTarget = null;
+        let wordGoalDocId = null;
+        let goalShownForTarget = null;
+        let goalRevealTimer = null;
+
+        const wordCountEl = root.querySelector("#word-count-value");
+        const wordGoalHoverbox = root.querySelector("#word-goal-hoverbox");
+        const wordGoalValueEl = root.querySelector("#word-goal-value");
+        const lastSavedEl = root.querySelector("#last-saved-status");
+
+        function hideWordGoalReveal() {
+            if (goalRevealTimer) {
+                window.clearTimeout(goalRevealTimer);
+                goalRevealTimer = null;
+            }
+            wordGoalHoverbox?.classList.remove("desk-hoverbox--visible");
+        }
+
+        function maybeShowWordGoalReveal(currentCount) {
+            if (
+                typeof wordGoalTarget !== "number" ||
+                typeof wordGoalDelta !== "number" ||
+                !wordGoalDocId ||
+                !activeDocId ||
+                activeDocId !== wordGoalDocId
+            ) {
+                return;
+            }
+            if (currentCount < wordGoalTarget) return;
+            if (goalShownForTarget === wordGoalTarget) return;
+
+            goalShownForTarget = wordGoalTarget;
+            if (wordGoalValueEl) {
+                wordGoalValueEl.textContent = String(wordGoalDelta);
+            }
+            wordGoalHoverbox?.classList.add("desk-hoverbox--visible");
+            goalRevealTimer = window.setTimeout(() => {
+                wordGoalHoverbox?.classList.remove("desk-hoverbox--visible");
+                goalRevealTimer = null;
+            }, 2000);
+        }
+
+        const updateWordCount = () => {
+            if (!wordCountEl || !tw) return;
+            const currentCount = countWords(tw.getValue());
+            wordCountEl.textContent = String(currentCount);
+            maybeShowWordGoalReveal(currentCount);
+        };
+        updateWordCount();
+        if (tw?.el) tw.el.addEventListener("input", updateWordCount);
 
         const docTitleBar = root.querySelector("#desk-doc-title-bar");
         const docTitleText = root.querySelector("#desk-doc-title-text");
         const writeOverlay = root.querySelector("#write-overlay");
         const writeTitleInput = root.querySelector("#write-doc-title-input");
         const writeErrorEl = root.querySelector("#write-overlay-error");
+        const goalOverlay = root.querySelector("#goal-overlay");
+        const goalInput = root.querySelector("#goal-input");
+        const goalErrorEl = root.querySelector("#goal-overlay-error");
 
         function setLastSavedStatus(text) {
             if (lastSavedEl) lastSavedEl.textContent = text;
@@ -253,10 +339,24 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             }
         }
 
+        function showGoalError(msg) {
+            if (!goalErrorEl) return;
+            if (msg) {
+                goalErrorEl.textContent = msg;
+                goalErrorEl.hidden = false;
+            } else {
+                goalErrorEl.textContent = "";
+                goalErrorEl.hidden = true;
+            }
+        }
+
         function openNewDocOverlay() {
             if (!writeOverlay || !writeTitleInput) return;
             writeTitleInput.value = "";
             showWriteError("");
+            closeOpenOverlay();
+            closeReadOverlay();
+            closeGoalOverlay();
             writeOverlay.hidden = false;
             writeOverlay.setAttribute("aria-hidden", "false");
             queueMicrotask(() => writeTitleInput.focus());
@@ -267,6 +367,52 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             writeOverlay.hidden = true;
             writeOverlay.setAttribute("aria-hidden", "true");
             showWriteError("");
+        }
+
+        function openGoalOverlay() {
+            if (!goalOverlay || !goalInput) return;
+            if (!activeDocId) {
+                setLastSavedStatus("open a document first");
+                return;
+            }
+            closeOpenOverlay();
+            closeReadOverlay();
+            closeWriteOverlay();
+            showGoalError("");
+            goalInput.value = "";
+            goalOverlay.hidden = false;
+            goalOverlay.setAttribute("aria-hidden", "false");
+            queueMicrotask(() => goalInput.focus());
+        }
+
+        function closeGoalOverlay() {
+            if (!goalOverlay) return;
+            goalOverlay.hidden = true;
+            goalOverlay.setAttribute("aria-hidden", "true");
+            showGoalError("");
+        }
+
+        function confirmGoal() {
+            if (!goalInput || !tw || !activeDocId) {
+                setLastSavedStatus("open a document first");
+                return false;
+            }
+            const raw = String(goalInput.value ?? "").trim();
+            const parsed = Number.parseInt(raw, 10);
+            if (!Number.isInteger(parsed) || parsed <= 0) {
+                showGoalError("Enter a whole number greater than 0.");
+                return false;
+            }
+
+            const currentCount = countWords(tw.getValue());
+            wordGoalDelta = parsed;
+            wordGoalTarget = currentCount + parsed;
+            wordGoalDocId = activeDocId;
+            goalShownForTarget = null;
+            hideWordGoalReveal();
+            closeGoalOverlay();
+            setLastSavedStatus(`goal set (+${parsed})`);
+            return true;
         }
 
         async function persistCurrentDoc() {
@@ -393,6 +539,12 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 confirmNewDocument();
             }
         });
+        goalInput?.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                confirmGoal();
+            }
+        });
 
         async function runAutosave() {
             if (!tw || !activeDocId) return;
@@ -483,6 +635,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             // Ensure only one dialog/overlay is visible.
             closeReadOverlay();
             closeWriteOverlay();
+            closeGoalOverlay();
 
             openDocList.textContent = "Loading...";
             openOverlay.hidden = false;
@@ -516,6 +669,9 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
 
         function openReadOverlay() {
             if (!readOverlay || !readOverlayContent || !tw) return;
+            closeOpenOverlay();
+            closeWriteOverlay();
+            closeGoalOverlay();
             readOverlayContent.textContent = tw.getValue();
             readOverlay.hidden = false;
             readOverlay.setAttribute("aria-hidden", "false");
@@ -537,6 +693,11 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             if (writeOverlay && !writeOverlay.hidden) {
                 e.preventDefault();
                 closeWriteOverlay();
+                return;
+            }
+            if (goalOverlay && !goalOverlay.hidden) {
+                e.preventDefault();
+                closeGoalOverlay();
                 return;
             }
             if (openOverlay && !openOverlay.hidden) {
@@ -579,6 +740,16 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 confirmNewDocument();
                 return;
             }
+            if (e.target?.closest?.('[data-action="goal-overlay-cancel"]')) {
+                e.preventDefault();
+                closeGoalOverlay();
+                return;
+            }
+            if (e.target?.closest?.('[data-action="goal-overlay-confirm"]')) {
+                e.preventDefault();
+                confirmGoal();
+                return;
+            }
             if (e.target?.closest?.('[data-action="open-overlay-close"]')) {
                 e.preventDefault();
                 closeOpenOverlay();
@@ -606,6 +777,12 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 if (action === "read") {
                     e.preventDefault();
                     openReadOverlay();
+                    return;
+                }
+
+                if (action === "word-count-goal") {
+                    e.preventDefault();
+                    openGoalOverlay();
                     return;
                 }
 
