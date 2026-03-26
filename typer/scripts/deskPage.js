@@ -16,6 +16,12 @@ import {
 } from "./fullscreenDesk.js";
 
 const AUTOSAVE_MS = 60_000;
+const POMODORO_DEFAULTS = Object.freeze({
+    workMin: 25,
+    breakMin: 5,
+    longBreakMin: 15,
+});
+const POMODORO_SESSION_WORK_CYCLES = 4;
 
 function storageDocKey(uid) {
     return `typer.docId.${uid}`;
@@ -38,6 +44,17 @@ function countWords(text) {
     return trimmed.split(/\s+/).length;
 }
 
+function minutesToSeconds(minutes) {
+    return Math.max(1, Math.round(Number(minutes) * 60));
+}
+
+function formatMmSs(totalSeconds) {
+    const safe = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+    const mins = Math.floor(safe / 60);
+    const secs = safe % 60;
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
 function renderDesk(root) {
     root.innerHTML = `
         <div class="desk-shell">
@@ -56,6 +73,8 @@ function renderDesk(root) {
                         id="focus-btn"
                         aria-pressed="false"
                     >Focus</button>
+                    <span class="desk-toolbar-sep">|</span>
+                    <button class="desk-toolbar-btn" type="button" data-action="save">Save</button>
                     <span class="desk-toolbar-sep">|</span>
                     <button class="desk-toolbar-btn" type="button" data-action="logout">Logout</button>
                 </div>
@@ -92,13 +111,14 @@ function renderDesk(root) {
                             <div class="desk-hoverbox-value" id="word-goal-value">0</div>
                         </div>
                     </div>
-                    <span class="desk-toolbar-sep">|</span>
-                    <span class="desk-toolbar-saved" aria-live="polite">Last saved: <span id="last-saved-status">—</span></span>
                 </div>
             </div>
 
             <div class="desk-doc-title-bar" id="desk-doc-title-bar" hidden>
                 <span class="desk-doc-title-text" id="desk-doc-title-text"></span>
+                <span class="desk-doc-title-saved" aria-live="polite">
+                    Last saved: <span id="last-saved-status">—</span>
+                </span>
             </div>
 
             <div class="typewriter-stage">
@@ -245,6 +265,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
 
         renderDesk(root);
         const toolbar = root.querySelector(".desk-toolbar");
+        const deskShell = root.querySelector(".desk-shell");
         const tw = mountTypewriter({
             root: root.querySelector("#typewriter-root"),
         });
@@ -257,6 +278,14 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         let wordGoalDocId = null;
         let goalShownForTarget = null;
         let goalRevealTimer = null;
+        let pomodoroConfig = { ...POMODORO_DEFAULTS };
+        let pomodoroDraft = { ...pomodoroConfig };
+        let pomodoroPhase = "work";
+        let pomodoroCycle = 1;
+        let pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.workMin);
+        let pomodoroRunning = false;
+        let pomodoroIntervalId = null;
+        let pomodoroError = "";
 
         const wordCountEl = root.querySelector("#word-count-value");
         const wordGoalHoverbox = root.querySelector("#word-goal-hoverbox");
@@ -572,6 +601,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             "beforeunload",
             () => {
                 window.clearInterval(autosaveTimer);
+                clearPomodoroInterval();
             },
             { once: true },
         );
@@ -579,6 +609,159 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         const pomodoroPanel = root.querySelector("#pomodoro-panel");
         const pomodoroBtn = root.querySelector("#pomodoro-btn");
         const focusBtn = root.querySelector("#focus-btn");
+
+        function getPomodoroPhaseLabel(phase) {
+            if (phase === "break") return "Break";
+            if (phase === "longBreak") return "Long break";
+            return "Work";
+        }
+
+        function clearPomodoroInterval() {
+            if (!pomodoroIntervalId) return;
+            window.clearInterval(pomodoroIntervalId);
+            pomodoroIntervalId = null;
+        }
+
+        function resetPomodoroRuntimeState() {
+            pomodoroPhase = "work";
+            pomodoroCycle = 1;
+            pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.workMin);
+            pomodoroRunning = false;
+            clearPomodoroInterval();
+        }
+
+        function renderPomodoroPanel() {
+            if (!pomodoroPanel) return;
+            pomodoroPanel.innerHTML = `
+                <div class="pomodoro-panel">
+                    <div class="pomodoro-panel-heading">Pomodoro</div>
+                    <div class="pomodoro-panel-status">
+                        <span>${getPomodoroPhaseLabel(pomodoroPhase)}</span>
+                        <span>Cycle ${pomodoroCycle}/${POMODORO_SESSION_WORK_CYCLES}</span>
+                    </div>
+                    <div class="pomodoro-panel-timer">${formatMmSs(pomodoroRemainingSeconds)}</div>
+
+                    <div class="pomodoro-runtime-actions">
+                        <button class="desk-toolbar-btn" type="button" data-action="pomodoro-start">Start</button>
+                        <button class="desk-toolbar-btn" type="button" data-action="pomodoro-pause">
+                            ${pomodoroRunning ? "Pause" : "Resume"}
+                        </button>
+                        <button class="desk-toolbar-btn" type="button" data-action="pomodoro-reset">Reset</button>
+                    </div>
+
+                    <label class="pomodoro-label" for="pomodoro-work-input">Work cycle (minutes)</label>
+                    <input class="pomodoro-input" id="pomodoro-work-input" type="number" min="1" step="1" value="${pomodoroDraft.workMin}" />
+
+                    <label class="pomodoro-label" for="pomodoro-break-input">Break (minutes)</label>
+                    <input class="pomodoro-input" id="pomodoro-break-input" type="number" min="1" step="1" value="${pomodoroDraft.breakMin}" />
+
+                    <label class="pomodoro-label" for="pomodoro-long-break-input">Long break (minutes)</label>
+                    <input class="pomodoro-input" id="pomodoro-long-break-input" type="number" min="1" step="1" value="${pomodoroDraft.longBreakMin}" />
+
+                    <p class="pomodoro-error"${pomodoroError ? "" : " hidden"}>${pomodoroError}</p>
+
+                    <div class="pomodoro-settings-actions">
+                        <button class="desk-toolbar-btn" type="button" data-action="pomodoro-cancel">Cancel</button>
+                        <button class="desk-toolbar-btn" type="button" data-action="pomodoro-save">Save</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function maybeRenderPomodoroPanel() {
+            if (!pomodoroPanel || pomodoroPanel.hidden) return;
+            renderPomodoroPanel();
+        }
+
+        function moveToNextPomodoroPhase() {
+            if (pomodoroPhase === "work") {
+                if (pomodoroCycle >= POMODORO_SESSION_WORK_CYCLES) {
+                    pomodoroPhase = "longBreak";
+                    pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.longBreakMin);
+                    return;
+                }
+                pomodoroPhase = "break";
+                pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.breakMin);
+                return;
+            }
+            if (pomodoroPhase === "break") {
+                pomodoroCycle += 1;
+                pomodoroPhase = "work";
+                pomodoroRemainingSeconds = minutesToSeconds(pomodoroConfig.workMin);
+                return;
+            }
+
+            resetPomodoroRuntimeState();
+            setLastSavedStatus("pomodoro session complete");
+        }
+
+        function tickPomodoro() {
+            if (!pomodoroRunning) return;
+            pomodoroRemainingSeconds -= 1;
+            if (pomodoroRemainingSeconds <= 0) {
+                moveToNextPomodoroPhase();
+            }
+            maybeRenderPomodoroPanel();
+        }
+
+        function startPomodoro() {
+            if (pomodoroRunning) return;
+            if (pomodoroRemainingSeconds <= 0) {
+                pomodoroRemainingSeconds = minutesToSeconds(
+                    pomodoroPhase === "work"
+                        ? pomodoroConfig.workMin
+                        : pomodoroPhase === "break"
+                          ? pomodoroConfig.breakMin
+                          : pomodoroConfig.longBreakMin,
+                );
+            }
+            pomodoroRunning = true;
+            clearPomodoroInterval();
+            pomodoroIntervalId = window.setInterval(tickPomodoro, 1000);
+            maybeRenderPomodoroPanel();
+        }
+
+        function togglePomodoroPauseResume() {
+            if (pomodoroRunning) {
+                pomodoroRunning = false;
+                clearPomodoroInterval();
+                maybeRenderPomodoroPanel();
+                return;
+            }
+            startPomodoro();
+        }
+
+        function resetPomodoro() {
+            resetPomodoroRuntimeState();
+            maybeRenderPomodoroPanel();
+        }
+
+        function parsePomodoroSettingsFromPanel() {
+            if (!pomodoroPanel) return null;
+            const workRaw = pomodoroPanel.querySelector("#pomodoro-work-input")?.value;
+            const breakRaw = pomodoroPanel.querySelector("#pomodoro-break-input")?.value;
+            const longBreakRaw = pomodoroPanel.querySelector("#pomodoro-long-break-input")?.value;
+            const parsed = {
+                workMin: Number.parseInt(String(workRaw ?? ""), 10),
+                breakMin: Number.parseInt(String(breakRaw ?? ""), 10),
+                longBreakMin: Number.parseInt(String(longBreakRaw ?? ""), 10),
+            };
+            const valid =
+                Number.isInteger(parsed.workMin) &&
+                parsed.workMin > 0 &&
+                Number.isInteger(parsed.breakMin) &&
+                parsed.breakMin > 0 &&
+                Number.isInteger(parsed.longBreakMin) &&
+                parsed.longBreakMin > 0;
+            return valid ? parsed : null;
+        }
+
+        function setPomodoroPanelOpen(isOpen) {
+            if (!pomodoroPanel || !pomodoroBtn) return;
+            pomodoroPanel.hidden = !isOpen;
+            pomodoroBtn.setAttribute("aria-expanded", String(isOpen));
+            deskShell?.classList.toggle("pomodoro-open", isOpen);
+        }
 
         function updateFocusButton(isFocused) {
             if (!focusBtn) return;
@@ -797,17 +980,89 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                     return;
                 }
 
+                if (action === "save") {
+                    e.preventDefault();
+                    if (!activeDocId) {
+                        setLastSavedStatus("open a document first");
+                        return;
+                    }
+                    try {
+                        await persistCurrentDoc();
+                        if (tw && tw.getValue() === lastPersisted) {
+                            setLastSavedStatus(
+                                new Date().toLocaleTimeString(undefined, {
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                    second: "2-digit",
+                                }),
+                            );
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        setLastSavedStatus("save failed");
+                    }
+                    return;
+                }
+
                 if (action === "pomodoro") {
                     e.preventDefault();
-                    if (pomodoroPanel && pomodoroBtn) {
-                        pomodoroPanel.hidden = !pomodoroPanel.hidden;
-                        pomodoroBtn.setAttribute("aria-expanded", String(!pomodoroPanel.hidden));
+                    if (pomodoroPanel) {
+                        const shouldOpen = pomodoroPanel.hidden;
+                        setPomodoroPanelOpen(shouldOpen);
+                        if (shouldOpen) {
+                            pomodoroDraft = { ...pomodoroConfig };
+                            pomodoroError = "";
+                            renderPomodoroPanel();
+                        }
                     }
+                    return;
+                }
+
+                if (action === "pomodoro-start") {
+                    e.preventDefault();
+                    startPomodoro();
+                    return;
+                }
+
+                if (action === "pomodoro-pause") {
+                    e.preventDefault();
+                    togglePomodoroPauseResume();
+                    return;
+                }
+
+                if (action === "pomodoro-reset") {
+                    e.preventDefault();
+                    resetPomodoro();
+                    return;
+                }
+
+                if (action === "pomodoro-save") {
+                    e.preventDefault();
+                    const parsed = parsePomodoroSettingsFromPanel();
+                    if (!parsed) {
+                        pomodoroError = "Enter whole numbers greater than 0.";
+                        maybeRenderPomodoroPanel();
+                        return;
+                    }
+                    pomodoroConfig = parsed;
+                    pomodoroDraft = { ...parsed };
+                    pomodoroError = "";
+                    resetPomodoroRuntimeState();
+                    maybeRenderPomodoroPanel();
+                    return;
+                }
+
+                if (action === "pomodoro-cancel") {
+                    e.preventDefault();
+                    pomodoroDraft = { ...pomodoroConfig };
+                    pomodoroError = "";
+                    setPomodoroPanelOpen(false);
                     return;
                 }
 
                 if (action === "logout") {
                     window.clearInterval(autosaveTimer);
+                    clearPomodoroInterval();
                     try {
                         await signOutUser();
                     } finally {

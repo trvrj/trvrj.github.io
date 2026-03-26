@@ -165,6 +165,8 @@ html:has(body.typer-desk-body) {
     padding: 14px 18px;
     border-bottom: 1px solid rgba(51, 65, 85, 0.6);
     transition: opacity 0.2s ease;
+    position: relative;
+    z-index: 80;
 }
 
 /* Focus mode: dimmed toolbar (~60% fade) + fullscreen requested from deskPage.js */
@@ -186,6 +188,7 @@ html:has(body.typer-desk-body) {
     position: relative;
     display: inline-flex;
     align-items: center;
+    z-index: 20;
 }
 
 .desk-hoverbox,
@@ -202,6 +205,7 @@ html:has(body.typer-desk-body) {
     background: rgba(2, 6, 23, 0.9);
     color: #e0e0e4;
     box-sizing: border-box;
+    z-index: 30;
 }
 
 .desk-hoverbox {
@@ -218,6 +222,74 @@ html:has(body.typer-desk-body) {
 
 .desk-popover {
     min-height: 80px;
+}
+
+.pomodoro-panel {
+    min-width: 280px;
+}
+
+.pomodoro-panel-heading {
+    font-size: 12pt;
+    margin-bottom: 10px;
+}
+
+.pomodoro-panel-status {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 10pt;
+    color: #94a3b8;
+}
+
+.pomodoro-panel-timer {
+    margin: 8px 0 12px;
+    font-size: 20pt;
+    letter-spacing: 0.04em;
+}
+
+.pomodoro-runtime-actions,
+.pomodoro-settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.pomodoro-runtime-actions {
+    margin-bottom: 12px;
+}
+
+.pomodoro-label {
+    display: block;
+    margin: 8px 0 4px;
+    font-size: 10pt;
+    color: #94a3b8;
+}
+
+.pomodoro-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #020617;
+    color: #e0e0e4;
+    font-size: 11pt;
+    font-family: inherit;
+}
+
+.pomodoro-input:focus {
+    outline: none;
+    border-color: #60a5fa;
+}
+
+.pomodoro-error {
+    margin: 10px 0 0;
+    font-size: 10pt;
+    color: #f87171;
+}
+
+.pomodoro-settings-actions {
+    margin-top: 12px;
 }
 
 .desk-hoverbox-value {
@@ -252,14 +324,18 @@ html:has(body.typer-desk-body) {
 
 .desk-doc-title-bar {
     flex-shrink: 0;
-    text-align: center;
     padding: 8px 18px 10px;
     transition: opacity 0.2s ease;
     /* No fill — same base as toolbar so title matches toolbar text brightness. */
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
 }
 
 /* Same perceived color as .desk-toolbar-btn inside .desk-toolbar-left (group opacity over black). */
 .desk-doc-title-text {
+    grid-column: 2;
+    justify-self: center;
     font-size: 11pt;
     letter-spacing: 0.04em;
     font-weight: 500;
@@ -268,6 +344,18 @@ html:has(body.typer-desk-body) {
         #e0e0e4 calc(min(1, (1 - var(--tw-line2-overlay)) * 1.25) * 100%),
         black
     );
+}
+
+.desk-doc-title-saved {
+    grid-column: 3;
+    justify-self: end;
+    font-size: 11pt;
+    color: color-mix(
+        in srgb,
+        #e0e0e4 calc(min(1, (1 - var(--tw-line2-overlay)) * 1.25) * 100%),
+        black
+    );
+    white-space: nowrap;
 }
 
 .write-overlay {
@@ -446,6 +534,7 @@ html:has(body.typer-desk-body) {
     min-height: 0;
     padding: 0 300px;
     box-sizing: border-box;
+    z-index: 1;
 }
 
 .typewriter-root {
@@ -470,6 +559,10 @@ html:has(body.typer-desk-body) {
     pointer-events: none;
     box-sizing: border-box;
     box-shadow: inset 0 0 0 1px rgba(51, 65, 85, 0.6);
+}
+
+.desk-shell.pomodoro-open .typewriter-root:not(:focus-within)::before {
+    content: none;
 }
 
 .typewriter-root::after {
