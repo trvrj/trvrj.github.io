@@ -58,36 +58,25 @@ function formatMmSs(totalSeconds) {
 function renderDesk(root) {
     root.innerHTML = `
         <div class="desk-shell">
+            <div class="desk-toolbar-host">
             <div class="desk-toolbar" role="toolbar" aria-label="Typer toolbar">
-                <div class="desk-toolbar-mobile">
-                    <button
-                        type="button"
-                        class="desk-toolbar-btn desk-toolbar-mobile-toggle"
-                        data-action="toolbar-menu"
-                        id="desk-toolbar-menu-toggle"
-                        aria-expanded="false"
-                        aria-controls="desk-toolbar-menu"
-                    >Open toolbar</button>
-                    <div
-                        class="desk-toolbar-mobile-menu"
-                        id="desk-toolbar-menu"
-                        hidden
-                        role="menu"
-                        aria-label="Desk tools"
-                    >
-                        <div class="desk-toolbar-mobile-meta" role="presentation">
-                            <span class="desk-toolbar-mobile-meta-label">Word count</span>
-                            <span class="desk-toolbar-mobile-meta-value" id="mobile-word-count-value">0</span>
-                        </div>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="new" role="menuitem">New</button>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="open" role="menuitem">Open</button>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="read" role="menuitem">Read</button>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="focus" role="menuitem">Focus</button>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="save" role="menuitem">Save</button>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="logout" role="menuitem">Logout</button>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="pomodoro" role="menuitem">Pomodoro</button>
-                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="word-count-goal" role="menuitem">Word count goal</button>
+                <div class="desk-toolbar-mobile-row">
+                    <div class="desk-toolbar-mobile">
+                        <button
+                            type="button"
+                            class="desk-toolbar-btn desk-toolbar-mobile-toggle"
+                            data-action="toolbar-menu"
+                            id="desk-toolbar-menu-toggle"
+                            aria-expanded="false"
+                            aria-controls="desk-toolbar-menu"
+                            aria-label="Options menu"
+                        >
+                            <span class="desk-toolbar-mobile-toggle-icon" aria-hidden="true"></span>
+                        </button>
                     </div>
+                    <span class="desk-doc-title-saved desk-doc-title-saved--toolbar" aria-live="polite">
+                        Last saved: <span class="last-saved-status">—</span>
+                    </span>
                 </div>
                 <div class="desk-toolbar-left">
                     <button class="desk-toolbar-btn" type="button" data-action="new">New</button>
@@ -147,11 +136,32 @@ function renderDesk(root) {
                     hidden
                 ></div>
             </div>
+            <div
+                class="desk-toolbar-mobile-menu"
+                id="desk-toolbar-menu"
+                hidden
+                role="menu"
+                aria-label="Desk tools"
+            >
+                <div class="desk-toolbar-mobile-meta" role="presentation">
+                    <span class="desk-toolbar-mobile-meta-label">Word count</span>
+                    <span class="desk-toolbar-mobile-meta-value" id="mobile-word-count-value">0</span>
+                </div>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="new" role="menuitem">New</button>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="open" role="menuitem">Open</button>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="read" role="menuitem">Read</button>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="focus" role="menuitem">Focus</button>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="save" role="menuitem">Save</button>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="logout" role="menuitem">Logout</button>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="pomodoro" role="menuitem">Pomodoro</button>
+                <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="word-count-goal" role="menuitem">Word count goal</button>
+            </div>
+            </div>
 
             <div class="desk-doc-title-bar" id="desk-doc-title-bar" hidden>
                 <span class="desk-doc-title-text" id="desk-doc-title-text"></span>
-                <span class="desk-doc-title-saved" aria-live="polite">
-                    Last saved: <span id="last-saved-status">—</span>
+                <span class="desk-doc-title-saved desk-doc-title-saved--in-title-bar" aria-live="polite">
+                    Last saved: <span class="last-saved-status">—</span>
                 </span>
             </div>
 
@@ -299,6 +309,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
 
         renderDesk(root);
         const toolbar = root.querySelector(".desk-toolbar");
+        const toolbarHost = root.querySelector(".desk-toolbar-host");
         const deskShell = root.querySelector(".desk-shell");
         const tw = mountTypewriter({
             root: root.querySelector("#typewriter-root"),
@@ -328,12 +339,12 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         const wordGoalToolbarItem = wordGoalToolbarBtn?.closest?.(".desk-toolbar-item") ?? null;
         const wordGoalHoverbox = root.querySelector("#word-goal-hoverbox");
         const wordGoalValueEl = root.querySelector("#word-goal-value");
-        const lastSavedEl = root.querySelector("#last-saved-status");
-        const lastSavedLineEl = lastSavedEl?.closest?.(".desk-doc-title-saved") ?? null;
+        const lastSavedEls = root.querySelectorAll(".last-saved-status");
+        const lastSavedDesktopLineEl = root.querySelector(".desk-doc-title-saved--in-title-bar");
 
         function setLastSavedHidden(isHidden) {
-            if (!lastSavedLineEl) return;
-            lastSavedLineEl.classList.toggle("desk-doc-title-saved--hidden", isHidden);
+            if (!lastSavedDesktopLineEl) return;
+            lastSavedDesktopLineEl.classList.toggle("desk-doc-title-saved--hidden", isHidden);
         }
 
         function hideWordGoalReveal() {
@@ -403,7 +414,9 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         const goalErrorEl = root.querySelector("#goal-overlay-error");
 
         function setLastSavedStatus(text) {
-            if (lastSavedEl) lastSavedEl.textContent = text;
+            lastSavedEls.forEach((el) => {
+                el.textContent = text;
+            });
         }
 
         function setDocTitleUI(docId) {
@@ -1126,8 +1139,8 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             "pomodoro-cancel",
         ]);
 
-        if (toolbar) {
-            toolbar.addEventListener("click", async (e) => {
+        if (toolbarHost) {
+            toolbarHost.addEventListener("click", async (e) => {
                 const btn = e.target?.closest?.("button[data-action]");
                 const action = btn?.getAttribute?.("data-action");
                 if (!action) return;

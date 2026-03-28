@@ -30,3 +30,10 @@ continuing to work on pomodoro timer
 
 1.2.4+11 (Lenovo - 3.26.26)
 refactor typewriter, ui changes
+
+1.3.0+12 (Lenovo - 3.28.26)
+some ui changes, first attempt at implementing mobile viewport
+
+1.3.1+13 (Lenovo - 3.28.26)
+several ui improvements in mobile view
+
