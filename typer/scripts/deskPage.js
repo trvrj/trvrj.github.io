@@ -59,6 +59,36 @@ function renderDesk(root) {
     root.innerHTML = `
         <div class="desk-shell">
             <div class="desk-toolbar" role="toolbar" aria-label="Typer toolbar">
+                <div class="desk-toolbar-mobile">
+                    <button
+                        type="button"
+                        class="desk-toolbar-btn desk-toolbar-mobile-toggle"
+                        data-action="toolbar-menu"
+                        id="desk-toolbar-menu-toggle"
+                        aria-expanded="false"
+                        aria-controls="desk-toolbar-menu"
+                    >Open toolbar</button>
+                    <div
+                        class="desk-toolbar-mobile-menu"
+                        id="desk-toolbar-menu"
+                        hidden
+                        role="menu"
+                        aria-label="Desk tools"
+                    >
+                        <div class="desk-toolbar-mobile-meta" role="presentation">
+                            <span class="desk-toolbar-mobile-meta-label">Word count</span>
+                            <span class="desk-toolbar-mobile-meta-value" id="mobile-word-count-value">0</span>
+                        </div>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="new" role="menuitem">New</button>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="open" role="menuitem">Open</button>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="read" role="menuitem">Read</button>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="focus" role="menuitem">Focus</button>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="save" role="menuitem">Save</button>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="logout" role="menuitem">Logout</button>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="pomodoro" role="menuitem">Pomodoro</button>
+                        <button type="button" class="desk-toolbar-mobile-menu-item desk-toolbar-btn" data-action="word-count-goal" role="menuitem">Word count goal</button>
+                    </div>
+                </div>
                 <div class="desk-toolbar-left">
                     <button class="desk-toolbar-btn" type="button" data-action="new">New</button>
                     <span class="desk-toolbar-sep">|</span>
@@ -93,13 +123,6 @@ function renderDesk(root) {
                             <div class="pomodoro-status-phase" id="pomodoro-status-phase">Write</div>
                             <div class="pomodoro-status-time" id="pomodoro-status-time">25:00</div>
                         </div>
-                        <div
-                            class="desk-popover"
-                            id="pomodoro-panel"
-                            role="region"
-                            aria-label="Pomodoro timer"
-                            hidden
-                        ></div>
                     </div>
                     <span class="desk-toolbar-sep">|</span>
                     <div class="desk-toolbar-item">
@@ -116,6 +139,13 @@ function renderDesk(root) {
                         </div>
                     </div>
                 </div>
+                <div
+                    class="desk-popover desk-popover--pomodoro-anchor"
+                    id="pomodoro-panel"
+                    role="region"
+                    aria-label="Pomodoro timer"
+                    hidden
+                ></div>
             </div>
 
             <div class="desk-doc-title-bar" id="desk-doc-title-bar" hidden>
@@ -293,6 +323,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         let pomodoroFlashTimer = null;
 
         const wordCountEl = root.querySelector("#word-count-value");
+        const mobileWordCountEl = root.querySelector("#mobile-word-count-value");
         const wordGoalToolbarBtn = root.querySelector('[data-action="word-count-goal"]');
         const wordGoalToolbarItem = wordGoalToolbarBtn?.closest?.(".desk-toolbar-item") ?? null;
         const wordGoalHoverbox = root.querySelector("#word-goal-hoverbox");
@@ -314,6 +345,10 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             setLastSavedHidden(false);
         }
 
+        function isMobileDeskViewport() {
+            return window.matchMedia("(max-width: 767px)").matches;
+        }
+
         function maybeShowWordGoalReveal(currentCount) {
             if (
                 typeof wordGoalTarget !== "number" ||
@@ -331,6 +366,10 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             if (wordGoalValueEl) {
                 wordGoalValueEl.textContent = String(wordGoalDelta);
             }
+            if (isMobileDeskViewport()) {
+                setLastSavedStatus(`Goal reached (+${wordGoalDelta})`);
+                return;
+            }
             wordGoalHoverbox?.classList.add("desk-hoverbox--visible");
             setLastSavedHidden(true);
             goalRevealTimer = window.setTimeout(() => {
@@ -344,6 +383,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             if (!wordCountEl || !tw) return;
             const currentCount = countWords(tw.getValue());
             wordCountEl.textContent = String(currentCount);
+            if (mobileWordCountEl) mobileWordCountEl.textContent = String(currentCount);
             maybeShowWordGoalReveal(currentCount);
         };
         updateWordCount();
@@ -421,6 +461,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         function openGoalOverlay() {
             if (!goalOverlay || !goalInput) return;
             if (!activeDocId) {
+                window.alert("No document is open. Open or create a document first.");
                 setLastSavedStatus("open a document first");
                 return;
             }
@@ -443,6 +484,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
 
         function confirmGoal() {
             if (!goalInput || !tw || !activeDocId) {
+                window.alert("No document is open. Open or create a document first.");
                 setLastSavedStatus("open a document first");
                 return false;
             }
@@ -454,6 +496,10 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             }
 
             const currentCount = countWords(tw.getValue());
+            if (currentCount === 0) {
+                showGoalError("Add text to the document before setting a word count goal.");
+                return false;
+            }
             wordGoalDelta = parsed;
             wordGoalTarget = currentCount + parsed;
             wordGoalDocId = activeDocId;
@@ -635,7 +681,66 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         const pomodoroStatusHoverbox = root.querySelector("#pomodoro-status-hoverbox");
         const pomodoroStatusPhaseEl = root.querySelector("#pomodoro-status-phase");
         const pomodoroStatusTimeEl = root.querySelector("#pomodoro-status-time");
-        const focusBtn = root.querySelector("#focus-btn");
+        const mobileDeskMq = window.matchMedia("(max-width: 767px)");
+        const mobileToolbarMenu = root.querySelector("#desk-toolbar-menu");
+        const mobileToolbarMenuToggle = root.querySelector("#desk-toolbar-menu-toggle");
+
+        function closeMobileToolbarMenu() {
+            if (!mobileToolbarMenu || !mobileToolbarMenuToggle) return;
+            mobileToolbarMenu.hidden = true;
+            mobileToolbarMenuToggle.setAttribute("aria-expanded", "false");
+        }
+
+        function openMobileToolbarMenu() {
+            if (!mobileToolbarMenu || !mobileToolbarMenuToggle) return;
+            mobileToolbarMenu.hidden = false;
+            mobileToolbarMenuToggle.setAttribute("aria-expanded", "true");
+        }
+
+        function syncPomodoroPanelPosition() {
+            if (!pomodoroPanel || !pomodoroBtn || !toolbar || pomodoroPanel.hidden) return;
+            const btnRect = pomodoroBtn.getBoundingClientRect();
+            const barRect = toolbar.getBoundingClientRect();
+            if (mobileDeskMq.matches) {
+                pomodoroPanel.style.position = "fixed";
+                pomodoroPanel.style.left = "12px";
+                pomodoroPanel.style.right = "12px";
+                pomodoroPanel.style.top = `${Math.round(barRect.bottom + 8)}px`;
+                pomodoroPanel.style.transform = "none";
+                pomodoroPanel.style.marginLeft = "0";
+                pomodoroPanel.style.marginTop = "0";
+                pomodoroPanel.style.maxHeight = `min(70dvh, calc(100dvh - ${Math.round(barRect.bottom + 24)}px))`;
+                pomodoroPanel.style.overflowY = "auto";
+            } else {
+                pomodoroPanel.style.position = "absolute";
+                const centerX = btnRect.left - barRect.left + btnRect.width / 2;
+                pomodoroPanel.style.left = `${Math.round(centerX)}px`;
+                pomodoroPanel.style.top = `${Math.round(btnRect.bottom - barRect.top + 10)}px`;
+                pomodoroPanel.style.transform = "translateX(-50%)";
+                pomodoroPanel.style.right = "auto";
+                pomodoroPanel.style.marginLeft = "0";
+                pomodoroPanel.style.marginTop = "0";
+                pomodoroPanel.style.maxHeight = "";
+                pomodoroPanel.style.overflowY = "";
+            }
+        }
+
+        window.addEventListener(
+            "resize",
+            () => {
+                if (pomodoroPanel && !pomodoroPanel.hidden) {
+                    syncPomodoroPanelPosition();
+                }
+            },
+            { passive: true },
+        );
+
+        document.addEventListener("click", (e) => {
+            if (!mobileDeskMq.matches) return;
+            if (!mobileToolbarMenu || mobileToolbarMenu.hidden) return;
+            if (e.target.closest("#desk-toolbar-menu") || e.target.closest("#desk-toolbar-menu-toggle")) return;
+            closeMobileToolbarMenu();
+        });
 
         function getPomodoroPhaseLabel(phase) {
             if (phase === "break" || phase === "longBreak") return "Break";
@@ -722,6 +827,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         function maybeRenderPomodoroPanel() {
             if (!pomodoroPanel || pomodoroPanel.hidden) return;
             renderPomodoroPanel();
+            queueMicrotask(syncPomodoroPanelPosition);
         }
 
         function moveToNextPomodoroPhase() {
@@ -821,12 +927,19 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             pomodoroPanel.hidden = !isOpen;
             pomodoroBtn.setAttribute("aria-expanded", String(isOpen));
             deskShell?.classList.toggle("pomodoro-open", isOpen);
+            if (isOpen) {
+                requestAnimationFrame(() => {
+                    syncPomodoroPanelPosition();
+                    requestAnimationFrame(syncPomodoroPanelPosition);
+                });
+            }
         }
 
         function updateFocusButton(isFocused) {
-            if (!focusBtn) return;
-            focusBtn.textContent = isFocused ? "Unfocus" : "Focus";
-            focusBtn.setAttribute("aria-pressed", String(isFocused));
+            root.querySelectorAll('button[data-action="focus"]').forEach((btnEl) => {
+                btnEl.textContent = isFocused ? "Unfocus" : "Focus";
+                btnEl.setAttribute("aria-pressed", String(isFocused));
+            });
         }
 
         async function enterFocusMode() {
@@ -927,6 +1040,11 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
         }
 
         function onOverlayKeydown(e) {
+            if (e.key === "Escape" && mobileDeskMq.matches && mobileToolbarMenu && !mobileToolbarMenu.hidden) {
+                e.preventDefault();
+                closeMobileToolbarMenu();
+                return;
+            }
             if (e.key !== "Escape") return;
             if (readOverlay && !readOverlay.hidden) {
                 e.preventDefault();
@@ -999,11 +1117,31 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
             }
         });
 
+        const mobileMenuKeepOpen = new Set([
+            "toolbar-menu",
+            "pomodoro-start",
+            "pomodoro-pause",
+            "pomodoro-reset",
+            "pomodoro-save",
+            "pomodoro-cancel",
+        ]);
+
         if (toolbar) {
             toolbar.addEventListener("click", async (e) => {
                 const btn = e.target?.closest?.("button[data-action]");
                 const action = btn?.getAttribute?.("data-action");
                 if (!action) return;
+
+                if (action === "toolbar-menu") {
+                    e.preventDefault();
+                    if (mobileToolbarMenu?.hidden) openMobileToolbarMenu();
+                    else closeMobileToolbarMenu();
+                    return;
+                }
+
+                if (!mobileMenuKeepOpen.has(action)) {
+                    closeMobileToolbarMenu();
+                }
 
                 if (action === "new") {
                     e.preventDefault();
@@ -1043,6 +1181,7 @@ export function initDeskPage({ rootId, redirectIfNotAuthedTo }) {
                 if (action === "save") {
                     e.preventDefault();
                     if (!activeDocId) {
+                        window.alert("No document is open. Open or create a document before saving.");
                         setLastSavedStatus("open a document first");
                         return;
                     }

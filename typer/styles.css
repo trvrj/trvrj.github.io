@@ -184,6 +184,19 @@ html:has(body.typer-desk-body) {
     opacity: min(1, calc((1 - var(--tw-line2-overlay)) * 1.25));
 }
 
+/* Hidden on desktop; phones use compact toolbar (see mobile media query). */
+.desk-toolbar-mobile {
+    display: none;
+}
+
+#pomodoro-panel.desk-popover--pomodoro-anchor {
+    position: absolute;
+    z-index: 90;
+    left: auto;
+    right: auto;
+    transform: none;
+}
+
 .desk-toolbar-item {
     position: relative;
     display: inline-flex;
@@ -716,6 +729,99 @@ html:has(body.typer-desk-body) {
 
     .read-overlay-inner {
         padding: 0 20px;
+    }
+}
+
+/* Phones only: collapsible toolbar + full-width typewriter. Does not alter default desktop rules above. */
+@media (max-width: 767px) {
+    .desk-toolbar-mobile {
+        display: block;
+        width: 100%;
+        position: relative;
+    }
+
+    .desk-toolbar-left,
+    .desk-toolbar-right {
+        display: none !important;
+    }
+
+    .desk-toolbar {
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .desk-toolbar-mobile-toggle {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 10px 8px;
+        font-size: 12pt;
+    }
+
+    .desk-toolbar-mobile-menu {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 100;
+        max-height: min(70dvh, calc(100vh - 56px));
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0 0 12px 12px;
+        border: 1px solid #334155;
+        border-top: none;
+        background: rgba(2, 6, 23, 0.98);
+        padding: 8px 0;
+        box-sizing: border-box;
+    }
+
+    .desk-toolbar-mobile-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px 12px;
+        margin: 0 0 4px;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        font-size: 11pt;
+        color: #94a3b8;
+    }
+
+    .desk-toolbar-mobile-meta-value {
+        color: #e0e0e4;
+        font-size: 14pt;
+        font-weight: 500;
+    }
+
+    .desk-toolbar-mobile-menu-item {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 14px 16px;
+        font-size: 12pt;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.35);
+        box-sizing: border-box;
+    }
+
+    .desk-toolbar-mobile-menu-item:last-child {
+        border-bottom: none;
+    }
+
+    .desk-shell {
+        overflow-x: hidden;
+    }
+
+    #pomodoro-panel.desk-popover--pomodoro-anchor:not([hidden]) {
+        z-index: 110;
+    }
+
+    .typewriter-stage {
+        padding-left: max(12px, env(safe-area-inset-left, 0px));
+        padding-right: max(12px, env(safe-area-inset-right, 0px));
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
