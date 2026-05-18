@@ -37,3 +37,5 @@ some ui changes, first attempt at implementing mobile viewport
 1.3.1+13 (Lenovo - 3.28.26)
 several ui improvements in mobile view
 
+1.3.2+25 (Macbook - 5.18.26)
+added links to app stores for new trovebook app, remove shift worker alarm from projects, updated font style and size throughout the app
