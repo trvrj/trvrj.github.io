@@ -39,7 +39,7 @@ function renderAccepted(items) {
     if (!acceptedRoot) return;
 
     if (!items.length) {
-        acceptedRoot.innerHTML = '<p class="info-text">No accepted feedback yet.</p>';
+        acceptedRoot.innerHTML = '<p class="info-text">No feedback yet.</p>';
         return;
     }
 
@@ -77,7 +77,7 @@ async function initAcceptedFeedbackPage() {
         const items = await listAcceptedFeedback();
         renderAccepted(items);
     } catch (error) {
-        renderError(error?.message || "Could not load accepted feedback.");
+        renderError(error?.message || "Could not load feedback.");
     }
 }
 
