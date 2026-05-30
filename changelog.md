@@ -39,3 +39,7 @@ several ui improvements in mobile view
 
 1.3.2+25 (Macbook - 5.18.26)
 added links to app stores for new trovebook app, remove shift worker alarm from projects, updated font style and size throughout the app
+
+1.3.3+26 (Lenovo - 5.30.26)
+created grouped css elements like header / body / info text so all of a type can be resized easily at once, created a form where users can submit name / email / comment for bugs or feedback for apps, added dashboard login to be able to login and moderate the comments submitted. added a feedback page with apps grouped in sections, setup firebase to store comments, added a pin text field at bottom of home page to reveal dashboard and typer tool links
+

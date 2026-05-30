@@ -8,24 +8,69 @@
 </head>
 <body>
     <main>
+        <p class="tagline intro-tagline">Hey, I'm Trevor.<br><br>I build apps for myself and others with similar interests. Here's what I've created and what I'm working on.</p>
 
-        <p class="tagline">Hey, I'm Trevor.<br><br>I build apps for myself and others with similar interests. Here's what I've created and what I'm working on.</p><br>
-
-        <h2>&lt; Apps &gt;</h2>
-        <ul>
-            <li><span class="app-name">Duos Name Generator</span><br><br><span class="description">An app that generates word pairs for naming things. Inspired by the Flutter tutorial by Filip Hráček.<br>Check out his other work: <a href="https://filiph.net" target="_blank" rel="noopener noreferrer">https://filiph.net</a></span>
-                <div class="screenshots">
-                    <img src="assets/duos screenshots/01.jpg" alt="Duos Name Generator Screenshot 1" onclick="openModal(this)">
-                    <img src="assets/duos screenshots/02.jpg" alt="Duos Name Generator Screenshot 2" onclick="openModal(this)">
-                    <img src="assets/duos screenshots/04.jpg" alt="Duos Name Generator Screenshot 4" onclick="openModal(this)">
-                </div>
-                <div class="get-it-on">
-                    <div class="store-badges">
-                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.duos.freemium" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
-                        <a href="https://apps.apple.com/us/app/duos-name-generator/id6753549201" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
+        <section class="feedback-form-section home-feedback-form-section">
+            <h2>&lt; Submit Feedback &gt;</h2>
+            <button
+                id="homeFeedbackToggleBtn"
+                class="feedback-toggle-btn"
+                type="button"
+                aria-expanded="false"
+                aria-controls="homeFeedbackPanel"
+            >
+                Expand form
+            </button>
+            <p class="info-text feedback-view-link"><a href="feedback/">View feedback</a></p>
+            <div id="homeFeedbackPanel" hidden>
+                <p class="info-text">Share a bug report, feature request, or general feedback. Include your name and comment. Email is optional in case I need to follow up for clarity.</p>
+                <form id="feedbackForm" class="feedback-form">
+                    <div class="feedback-field">
+                        <label for="feedbackApp">App</label>
+                        <select id="feedbackApp" name="app" required>
+                            <option value="">Select an app</option>
+                            <option value="adaman">Adaman</option>
+                            <option value="duos">Duos Name Generator</option>
+                            <option value="bastion">Bastion Password Manager</option>
+                            <option value="trovebook">Trovebook</option>
+                        </select>
                     </div>
-                </div>
-            </li>
+
+                    <div class="feedback-field">
+                        <label for="feedbackName">Name</label>
+                        <input id="feedbackName" name="name" type="text" maxlength="80" required>
+                    </div>
+
+                    <div class="feedback-field">
+                        <label for="feedbackEmail">Email (optional)</label>
+                        <input id="feedbackEmail" name="email" type="email" maxlength="160">
+                    </div>
+
+                    <div class="feedback-field">
+                        <label for="feedbackType">Type</label>
+                        <select id="feedbackType" name="type" required>
+                            <option value="">Select a type</option>
+                            <option value="feature_request">Feature request</option>
+                            <option value="bug_report">Bug report</option>
+                            <option value="general_feedback">General feedback</option>
+                        </select>
+                    </div>
+
+                    <div class="feedback-field">
+                        <label for="feedbackComment">Comment</label>
+                        <textarea id="feedbackComment" name="comment" rows="6" maxlength="4000" required></textarea>
+                    </div>
+
+                    <div class="feedback-submit-row">
+                        <button type="submit" id="feedbackSubmitBtn">Submit</button>
+                    </div>
+                </form>
+                <p id="feedbackFormStatus" class="info-text" aria-live="polite"></p>
+            </div>
+        </section>
+
+        <h2 class="apps-heading">&lt; Apps &gt;</h2>
+        <ul>
             <li><span class="app-name">Adaman</span><br><br><span class="description">A Decktet game for one player. The Decktet is a custom playing card set created by P. H. Magnus.<br>Check it out: <a href="https://www.decktet.com" target="_blank" rel="noopener noreferrer">https://www.decktet.com</a></span>
                 <div class="screenshots">
                     <img src="assets/adaman screenshots/adaman 01.png" alt="Adaman Screenshot 1" onclick="openModal(this)">
@@ -36,6 +81,19 @@
                     <div class="store-badges">
                         <a href="https://play.google.com/store/apps/details?id=com.trvrj.adaman&hl=en-US" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
                         <a href="https://apps.apple.com/us/app/adaman/id6756248997" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
+                    </div>
+                </div>
+            </li>
+            <li><span class="app-name">Duos Name Generator</span><br><br><span class="description">An app that generates word pairs for naming things. Inspired by the Flutter tutorial by Filip Hráček.<br>Check out his other work: <a href="https://filiph.net" target="_blank" rel="noopener noreferrer">https://filiph.net</a></span>
+                <div class="screenshots">
+                    <img src="assets/duos screenshots/01.jpg" alt="Duos Name Generator Screenshot 1" onclick="openModal(this)">
+                    <img src="assets/duos screenshots/02.jpg" alt="Duos Name Generator Screenshot 2" onclick="openModal(this)">
+                    <img src="assets/duos screenshots/04.jpg" alt="Duos Name Generator Screenshot 4" onclick="openModal(this)">
+                </div>
+                <div class="get-it-on">
+                    <div class="store-badges">
+                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.duos.freemium" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
+                        <a href="https://apps.apple.com/us/app/duos-name-generator/id6753549201" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
                     </div>
                 </div>
             </li>
@@ -74,11 +132,21 @@
             <li><span class="app-name">Personal online writing environment</span><br><span class="description">A site with a digital typewriter view. Centered text, only 2-3 lines visible at a time. For personal use.</span></li>
         </ul>
 
-        <p class="tagline">Questions, suggestions, comments? You can reach me at <a href="mailto:trevor@trvrj.com">trevor@trvrj.com</a>.</p>
+        <p class="tagline info-text">Questions, suggestions, comments? You can reach me at <a href="mailto:trevor@trvrj.com">trevor@trvrj.com</a>.</p>
         
         <p class="footer-links"><a href="privacy-policy.html">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="terms-of-service.html">Terms of Service</a></p>
-        <br><br>
-        <p class="footer-links"><a href="typer/">typer</a></p>
+
+        <section class="owner-links-gate">
+            <input
+                id="ownerPinInput"
+                class="owner-pin-input"
+                type="password"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-label="Owner PIN"
+            >
+            <p id="ownerLinks" class="owner-links info-text" hidden><a href="dashboard/auth/">Dashboard</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="typer/">typer</a></p>
+        </section>
     </main>
 
     <!-- Modal for enlarged images -->
@@ -108,5 +176,6 @@
             }
         });
     </script>
+    <script type="module" src="scripts/feedbackPage.js"></script>
 </body>
 </html>

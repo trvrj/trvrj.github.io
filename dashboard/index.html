@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Trevor Johnson</title>
+    <link rel="stylesheet" href="../styles.css?v=1">
+</head>
+<body>
+    <main>
+        <p class="info-text"><a href="../index.html">Back to Home</a></p>
+        <h2>&lt; Dashboard &gt;</h2>
+        <p class="info-text">Moderation queue for pending feedback.</p>
+
+        <section class="feedback-form-section">
+            <button id="dashboardSignOutBtn" type="button">Sign out</button>
+            <p id="dashboardStatus" class="info-text" aria-live="polite"></p>
+        </section>
+
+        <section>
+            <h2>&lt; Pending Feedback &gt;</h2>
+            <div id="pendingFeedbackList" class="feedback-list"></div>
+        </section>
+    </main>
+
+    <script type="module" src="../scripts/dashboardPage.js"></script>
+</body>
+</html>
