@@ -6,16 +6,9 @@
     font-display: swap;
 }
 
-:root {
-    --font-size-header: 14pt;
-    --font-size-body: 12pt;
-    --font-size-info: 10pt;
-    --apps-block-gap: 80px;
-}
-
 body {
     font-family: "M PLUS Rounded 1c", sans-serif;
-    font-size: var(--font-size-body);
+    font-size: 12pt;
     font-weight: normal;
     line-height: 1.6;
     color: #d1d5db;
@@ -31,19 +24,19 @@ main {
 }
 
 h1 {
-    font-size: var(--font-size-header);
+    font-size: 14pt;
     font-weight: normal;
     margin: 0 0 15px 0;
 }
 
 h2 {
-    font-size: var(--font-size-header);
+    font-size: 14pt;
     font-weight: normal;
     margin: 45px 0 30px 0;
 }
 
 p {
-    font-size: var(--font-size-body);
+    font-size: 12pt;
     font-weight: normal;
     margin: 0 0 15px 0;
 }
@@ -53,7 +46,7 @@ p.tagline {
 }
 
 p.info-text {
-    font-size: var(--font-size-info);
+    font-size: 10pt;
 }
 
 p.top-links {
@@ -73,8 +66,8 @@ p.intro-tagline {
 }
 
 .home-feedback-form-section {
-    margin-top: var(--apps-block-gap);
-    margin-bottom: var(--apps-block-gap);
+    margin-top: 80px;
+    margin-bottom: 80px;
 }
 
 button.feedback-toggle-btn {
@@ -83,7 +76,7 @@ button.feedback-toggle-btn {
     border: none;
     padding: 0;
     font-family: inherit;
-    font-size: var(--font-size-body) !important;
+    font-size: 12pt !important;
     line-height: 1.35;
     cursor: pointer;
     text-decoration: none;
@@ -106,7 +99,7 @@ button.feedback-toggle-btn {
 p.feedback-view-link {
     margin-top: 8px;
     margin-bottom: 16px;
-    font-size: var(--font-size-body);
+    font-size: 12pt;
 }
 
 h2.apps-heading {
@@ -132,7 +125,7 @@ h2.apps-heading {
 
 .feedback-form label {
     display: block;
-    font-size: var(--font-size-body);
+    font-size: 12pt;
 }
 
 .feedback-form input,
@@ -144,7 +137,7 @@ h2.apps-heading {
     border-radius: 4px;
     padding: 10px;
     font-family: inherit;
-    font-size: var(--font-size-body);
+    font-size: 12pt;
 }
 
 .feedback-form button {
@@ -154,7 +147,7 @@ h2.apps-heading {
     border-radius: 4px;
     padding: 10px 14px;
     font-family: inherit;
-    font-size: var(--font-size-body);
+    font-size: 12pt;
     cursor: pointer;
 }
 
@@ -181,7 +174,7 @@ h2.apps-heading {
     border-radius: 4px;
     padding: 10px 14px;
     font-family: inherit;
-    font-size: var(--font-size-body);
+    font-size: 12pt;
     cursor: pointer;
     margin: 0 10px 10px 0;
 }
@@ -219,7 +212,7 @@ h2.apps-heading {
 }
 
 .accepted-group-app-name {
-    font-size: var(--font-size-body);
+    font-size: 12pt;
     margin: 0 0 12px 0;
 }
 
@@ -238,7 +231,7 @@ ul {
 }
 
 li {
-    font-size: var(--font-size-body);
+    font-size: 12pt;
     font-weight: normal;
     margin: 0 0 30px 0;
 }
@@ -296,7 +289,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     color: #9ca3af;
-    font-size: var(--font-size-info);
+    font-size: 10pt;
     text-align: center;
 }
 
@@ -314,7 +307,7 @@ a:hover {
 
 .get-it-on p {
     margin: 0 0 10px 0;
-    font-size: var(--font-size-body);
+    font-size: 12pt;
 }
 
 .store-badges {
@@ -449,7 +442,7 @@ a:hover {
 
 /* Footer links */
 .footer-links {
-    font-size: var(--font-size-info);
+    font-size: 10pt;
     text-align: center;
     margin: 10px 0 0 0;
 }
@@ -467,7 +460,7 @@ a:hover {
     border-radius: 4px;
     padding: 8px 10px;
     font-family: inherit;
-    font-size: var(--font-size-info);
+    font-size: 10pt;
     text-align: center;
 }
 
