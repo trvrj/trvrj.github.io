@@ -46,3 +46,7 @@ created grouped css elements like header / body / info text so all of a type can
 1.3.3+27 (Lenovo - 5.30.26)
 small ui changes
 
+1.3.3+28 (Lenovo - 5.30.26)
+more ui changes
+
+

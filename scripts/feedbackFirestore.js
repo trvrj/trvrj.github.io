@@ -7,6 +7,7 @@ import {
     serverTimestamp,
     updateDoc,
     doc,
+    where,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { db, firebaseConfigError } from "./firebaseClient.js";
 
@@ -71,7 +72,13 @@ export async function rejectFeedback(feedbackId) {
 }
 
 export async function listAcceptedFeedback() {
-    const q = query(feedbackCollectionRef(), orderBy("createdAt", "desc"));
+    const q = query(feedbackCollectionRef(), where("published", "==", true));
     const snap = await getDocs(q);
-    return snap.docs.map((item) => ({ id: item.id, ...item.data() })).filter((item) => item.published === true);
+    return snap.docs
+        .map((item) => ({ id: item.id, ...item.data() }))
+        .sort((a, b) => {
+            const aMs = a?.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+            const bMs = b?.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+            return bMs - aMs;
+        });
 }
