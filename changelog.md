@@ -49,4 +49,7 @@ small ui changes
 1.3.3+28 (Lenovo - 5.30.26)
 more ui changes
 
+1.3.3+29 (Lenovo - 5.30.26)
+more ui changes
+
 
