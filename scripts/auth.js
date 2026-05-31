@@ -10,16 +10,17 @@ import { isUserAuthorizedByEmail } from "./authorization.js";
 
 function shouldUseRedirectSignIn() {
     const ua = navigator.userAgent || "";
-    if (/Android|iPhone|iPod|Mobile|Silk|Kindle/i.test(ua)) {
-        return true;
-    }
-    if (/iPad/.test(ua)) {
-        return true;
-    }
-    if (navigator.maxTouchPoints > 1 && /MacIntel/.test(navigator.platform)) {
-        return true;
-    }
-    return false;
+    const isIpad = /iPad/.test(ua) || (navigator.maxTouchPoints > 1 && /MacIntel/.test(navigator.platform));
+    const isIphoneOrIpod = /iPhone|iPod/.test(ua);
+    const isIos = isIpad || isIphoneOrIpod;
+    const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
+
+    // Redirect is more reliable on iOS Safari; popup is preferred elsewhere.
+    return isIos && isSafari;
+}
+
+export function getDefaultGoogleSignInMethod() {
+    return shouldUseRedirectSignIn() ? "redirect" : "popup";
 }
 
 export function subscribeToAuthChanges(callback) {
@@ -37,11 +38,15 @@ export async function completeGoogleRedirectSignIn() {
     return getRedirectResult(auth);
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(options = {}) {
     if (!auth || !googleProvider) {
         throw new Error(firebaseConfigError || "Firebase auth not configured.");
     }
-    if (shouldUseRedirectSignIn()) {
+
+    const requestedMethod = options?.method ?? "auto";
+    const method = requestedMethod === "auto" ? getDefaultGoogleSignInMethod() : requestedMethod;
+
+    if (method === "redirect") {
         await signInWithRedirect(auth, googleProvider);
         return null;
     }
