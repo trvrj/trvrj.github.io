@@ -52,4 +52,7 @@ more ui changes
 1.3.3+29 (Lenovo - 5.30.26)
 more ui changes
 
+1.3.4+35 (Lenovo - 5.30.26)
+added simple website visit tracker to track visits
+
 
