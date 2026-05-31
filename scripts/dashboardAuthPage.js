@@ -1,7 +1,8 @@
 import { firebaseConfigError, isFirebaseConfigured } from "./firebaseClient.js";
 import {
     assertAuthorizedUser,
-    signInWithGooglePopup,
+    completeGoogleRedirectSignIn,
+    signInWithGoogle,
     signOutUser,
     subscribeToAuthChanges,
 } from "./auth.js";
@@ -24,6 +25,9 @@ function describeAuthError(error) {
     if (code === "auth/popup-closed-by-user") {
         return "Sign-in popup was closed before completing sign-in.";
     }
+    if (code === "auth/redirect-cancelled-by-user") {
+        return "Sign-in was cancelled before completing.";
+    }
     return error?.message || "Sign-in failed.";
 }
 
@@ -36,7 +40,7 @@ if (signInBtn) {
 
         try {
             setStatus("Signing in...");
-            await signInWithGooglePopup();
+            await signInWithGoogle();
         } catch (error) {
             setStatus(describeAuthError(error));
         }
@@ -46,6 +50,10 @@ if (signInBtn) {
 if (!isFirebaseConfigured) {
     setStatus(firebaseConfigError);
 } else {
+    completeGoogleRedirectSignIn().catch((error) => {
+        setStatus(describeAuthError(error));
+    });
+
     subscribeToAuthChanges(async (user) => {
         if (!user) {
             setStatus("Sign in with your admin Google account.");

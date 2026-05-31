@@ -91,7 +91,7 @@ if (form) {
             await submitFeedback({ appId, appLabel, username, email, type, comment });
             form.reset();
             setStatus("Thanks! Your feedback is pending review.");
-            setHomeFeedbackPanelExpanded(true);
+            setHomeFeedbackPanelExpanded(false);
         } catch (error) {
             setStatus(error?.message || "Could not submit feedback.");
         } finally {
