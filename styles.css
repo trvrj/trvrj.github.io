@@ -459,6 +459,20 @@ body button {
 /* Responsive design for different screen widths */
 /* Mobile styles */
 @media (max-width: 768px) {
+    body h1,
+    body h2,
+    body p,
+    body li,
+    body a,
+    body span,
+    body label,
+    body input,
+    body select,
+    body textarea,
+    body button {
+        font-size: 12pt !important;
+    }
+
     body {
         padding: 40px 20px 0 20px;
         overflow-x: hidden;

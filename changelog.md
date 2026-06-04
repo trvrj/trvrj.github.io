@@ -61,3 +61,6 @@ remove typer from projects and add to new tools section, changed bg color for al
 1.3.6+37 (Lenovo - 6.3.26)
 added thin divider line between sections, refactored the apps section and the tools section
 
+1.3.6+38 (Lenovo - 6.3.26)
+fixed 2 text buttons in mobile view (hopefully)
+
