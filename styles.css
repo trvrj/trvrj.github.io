@@ -6,6 +6,11 @@
     font-display: swap;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 body {
     font-family: "M PLUS Rounded 1c", sans-serif;
     font-size: 12pt;
