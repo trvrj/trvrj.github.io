@@ -5,12 +5,13 @@ import {
     subscribeToAuthChanges,
 } from "./auth.js";
 import { acceptFeedback, listPendingFeedback, rejectFeedback } from "./feedbackFirestore.js";
-import { listRecentSiteVisits } from "./visitFirestore.js";
+import { getTotalSiteVisits, listRecentSiteVisits } from "./visitFirestore.js";
 
 const signOutBtn = document.getElementById("dashboardSignOutBtn");
 const statusEl = document.getElementById("dashboardStatus");
 const listEl = document.getElementById("pendingFeedbackList");
 const siteVisitListEl = document.getElementById("siteVisitList");
+const siteVisitTotalEl = document.getElementById("siteVisitTotal");
 
 let isAuthorized = false;
 
@@ -95,6 +96,11 @@ function renderSiteVisits(items) {
         .join("");
 }
 
+function renderSiteVisitTotal(total) {
+    if (!siteVisitTotalEl) return;
+    siteVisitTotalEl.textContent = `Total visits: ${Number(total) || 0}`;
+}
+
 async function refreshPendingList() {
     if (!isAuthorized) {
         renderPendingFeedback([]);
@@ -107,7 +113,7 @@ async function refreshPendingList() {
         renderPendingFeedback([]);
         const code = String(error?.code ?? "");
         if (code === "permission-denied") {
-            setStatus("Firestore read was denied. Verify Firestore rules admin email is trevor@trvrj.com.");
+            setStatus("Firestore read was denied. Verify Firestore rules allow one of your authorized dashboard emails.");
             return;
         }
         setStatus(error?.message || "Could not load pending feedback.");
@@ -117,14 +123,20 @@ async function refreshPendingList() {
 async function refreshSiteVisitList() {
     if (!isAuthorized) {
         renderSiteVisits([]);
+        renderSiteVisitTotal(0);
         return;
     }
 
     try {
-        const items = await listRecentSiteVisits(100);
+        const [items, total] = await Promise.all([
+            listRecentSiteVisits(25),
+            getTotalSiteVisits(),
+        ]);
         renderSiteVisits(items);
+        renderSiteVisitTotal(total);
     } catch (error) {
         renderSiteVisits([]);
+        renderSiteVisitTotal(0);
         const code = String(error?.code ?? "");
         if (code === "permission-denied") {
             setStatus("Firestore read was denied for site visits. Verify rules allow authorized dashboard users.");

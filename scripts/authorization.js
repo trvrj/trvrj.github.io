@@ -1,6 +1,9 @@
 // Client-side access gating for the dashboard.
 // IMPORTANT: This is not a security boundary by itself.
-export const allowedEmails = ["trevor@trvrj.com"];
+export const allowedEmails = [
+    "trevor@trvrj.com",
+    "trevorjohnson.texas@gmail.com",
+];
 
 export function isUserAuthorizedByEmail(userEmail) {
     if (!userEmail) return false;

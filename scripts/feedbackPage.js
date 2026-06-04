@@ -16,7 +16,7 @@ const homeFeedbackPanel = document.getElementById("homeFeedbackPanel");
 const ownerPinInput = document.getElementById("ownerPinInput");
 const ownerLinks = document.getElementById("ownerLinks");
 
-const OWNER_PIN = "1234";
+const OWNER_PIN = "1881";
 
 function setStatus(message) {
     if (!statusEl) return;

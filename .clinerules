@@ -1,0 +1,5 @@
+# AI Agent Rules for this Project
+
+- **NO Browser Subagents**: Do not use `browser_subagent` or any browser-based automated verification tools.
+- **NO Closed-Loop Visual Verification**: Do not attempt to visually verify UI changes or take screenshots using subagents.
+- **Manual Verification**: The user will be the sole individual responsible for verifying that all changes work correctly on their local development server. Write the code, check it for syntax errors/lint issues, and immediately return it to the user.

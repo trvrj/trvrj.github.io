@@ -55,4 +55,9 @@ more ui changes
 1.3.4+35 (Lenovo - 5.30.26)
 added simple website visit tracker to track visits
 
+1.3.5+36 (Lenovo - 6.2.26)  
+remove typer from projects and add to new tools section, changed bg color for all site pages except typer pages, added screenshots for typer tool, reduced opacity of overlay when clicking screenshots for better clarity on darker screenshots, fixed google sign in issue on dashboard, added total visitors count in dashboard 
+
+1.3.6+37 (Lenovo - 6.3.26)
+added thin divider line between sections, refactored the apps section and the tools section
 

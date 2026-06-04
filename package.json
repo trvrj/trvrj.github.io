@@ -1,0 +1,10 @@
+{
+  "name": "trvrj.github.io",
+  "private": true,
+  "scripts": {
+    "dev": "live-server --port=8000 --host=0.0.0.0 --wait=100"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

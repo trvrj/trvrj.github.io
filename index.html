@@ -10,6 +10,8 @@
     <main>
         <p class="tagline intro-tagline">Hey, I'm Trevor.<br><br>I build apps for myself and others with similar interests. Here's what I've created and what I'm working on.</p>
 
+        <hr class="section-divider">
+
         <section class="feedback-form-section home-feedback-form-section">
             <h2>&lt; Submit Feedback &gt;</h2>
             <p class="info-text feedback-view-link"><a href="feedback/">View feedback</a></p>
@@ -69,70 +71,51 @@
             <p id="feedbackFormStatus" class="info-text" aria-live="polite"></p>
         </section>
 
-        <h2 class="apps-heading">&lt; Apps &gt;</h2>
-        <ul>
-            <li><span class="app-name">Adaman</span><br><br><span class="description">A Decktet game for one player. The Decktet is a custom playing card set created by P. H. Magnus.<br>Check it out: <a href="https://www.decktet.com" target="_blank" rel="noopener noreferrer">https://www.decktet.com</a></span>
-                <div class="screenshots">
-                    <img src="assets/adaman screenshots/adaman 01.png" alt="Adaman Screenshot 1" onclick="openModal(this)">
-                    <img src="assets/adaman screenshots/adaman 02.png" alt="Adaman Screenshot 2" onclick="openModal(this)">
-                    <img src="assets/adaman screenshots/adaman 03.png" alt="Adaman Screenshot 3" onclick="openModal(this)">
-                </div>
-                <div class="get-it-on">
-                    <div class="store-badges">
-                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.adaman&hl=en-US" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
-                        <a href="https://apps.apple.com/us/app/adaman/id6756248997" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
-                    </div>
-                </div>
-            </li>
-            <li><span class="app-name">Duos Name Generator</span><br><br><span class="description">An app that generates word pairs for naming things. Inspired by the Flutter tutorial by Filip Hráček.<br>Check out his other work: <a href="https://filiph.net" target="_blank" rel="noopener noreferrer">https://filiph.net</a></span>
-                <div class="screenshots">
-                    <img src="assets/duos screenshots/01.jpg" alt="Duos Name Generator Screenshot 1" onclick="openModal(this)">
-                    <img src="assets/duos screenshots/02.jpg" alt="Duos Name Generator Screenshot 2" onclick="openModal(this)">
-                    <img src="assets/duos screenshots/04.jpg" alt="Duos Name Generator Screenshot 4" onclick="openModal(this)">
-                </div>
-                <div class="get-it-on">
-                    <div class="store-badges">
-                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.duos.freemium" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
-                        <a href="https://apps.apple.com/us/app/duos-name-generator/id6753549201" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
-                    </div>
-                </div>
-            </li>
-            <li><span class="app-name">Bastion Password Manager</span><br><br><span class="description">A robust, offline password manager focused on speed, for those who prefer not to use autopay or save their passwords in browsers.</span>
-                <div class="screenshots">
-                    <img src="assets/bastion screenshots/bastion goog 01.png" alt="Bastion Password Manager Screenshot 1" onclick="openModal(this)">
-                    <img src="assets/bastion screenshots/bastion goog 03.png" alt="Bastion Password Manager Screenshot 2" onclick="openModal(this)">
-                    <img src="assets/bastion screenshots/bastion goog 05.png" alt="Bastion Password Manager Screenshot 3" onclick="openModal(this)">
-                </div>
-                <div class="get-it-on">
-                    <div class="store-badges">
-                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.bastion" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
-                        <a href="https://apps.apple.com/us/app/bastion-password-manager/id6759344926" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
-                    </div>
-                </div>
-            </li>
-            <li><span class="app-name">Trovebook</span><br><br><span class="description">Categorize and manage your data as inventories.</span>
-                <div class="screenshots">
-                    <img src="assets/trovebook screenshots/01.jpeg" alt="Trovebook Screenshot 1" onclick="openModal(this)">
-                    <img src="assets/trovebook screenshots/02.jpeg" alt="Trovebook Screenshot 2" onclick="openModal(this)">
-                    <img src="assets/trovebook screenshots/03.jpeg" alt="Trovebook Screenshot 3" onclick="openModal(this)">
-                </div>
-                <div class="get-it-on">
-                    <div class="store-badges">
-                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.trovebook" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
-                        <a href="https://apps.apple.com/us/app/trovebook-inventory-tracker/id6767795666" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
-                    </div>
-                </div>
-            </li>
-        </ul>
+        <hr class="section-divider">
 
-        <h2>&lt; Projects &gt;</h2>
+        <h2 class="section-heading">&lt; Apps &gt;</h2>
+        <div class="apps-grid">
+            <button type="button" class="app-grid-item" data-app="adaman" aria-label="Open Adaman details">
+                <img src="assets/app icons/adaman icon.png" alt="Adaman icon" class="app-grid-icon">
+                <span class="app-grid-label">Adaman</span>
+            </button>
+            <button type="button" class="app-grid-item" data-app="duos" aria-label="Open Duos details">
+                <img src="assets/app icons/Duos app icon.png" alt="Duos Name Generator icon" class="app-grid-icon">
+                <span class="app-grid-label">Duos Name Generator</span>
+            </button>
+            <button type="button" class="app-grid-item" data-app="bastion" aria-label="Open Bastion details">
+                <img src="assets/app icons/new bastion logo (1).png" alt="Bastion Password Manager icon" class="app-grid-icon">
+                <span class="app-grid-label">Bastion Password Manager</span>
+            </button>
+            <button type="button" class="app-grid-item" data-app="trovebook" aria-label="Open Trovebook details">
+                <img src="assets/app icons/trovebook icon.png" alt="Trovebook icon" class="app-grid-icon">
+                <span class="app-grid-label">Trovebook</span>
+            </button>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-heading">&lt; Tools &gt;</h2>
+        <div class="tool-item">
+            <button type="button" class="tool-btn" data-tool="typer" aria-label="Open Typer Tool details">
+                <img src="assets/app icons/github icon.png" alt="GitHub icon" class="tool-icon">
+                <span class="tool-name">Typer Tool</span>
+            </button>
+            <p class="tool-description">Create a personal writing environment on your website that saves and loads your work from a database. (Bottom screenshot taken from a laptop.)</p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-heading">&lt; Projects &gt;</h2>
         <ul>
             <li><span class="app-name">Conclave of Crowns</span><br><span class="description">A terminal, command-line-style game played with standard playing cards.</span></li>
             <li><span class="app-name">Text adventure game</span><br><span class="description">I don't know precisely what the story will be yet, but working on getting the engine built and running correctly.</span></li>
-            <li><span class="app-name">Personal online writing environment</span><br><span class="description">A site with a digital typewriter view. Centered text, only 2-3 lines visible at a time. For personal use.</span></li>
+            <li><span class="app-name">1v1 matchmaking word game</span><br><span class="description">This is very early, but I'm playing around with designing a word game, because who doesn't love word games?</span></li>
         </ul>
 
-        <p class="tagline info-text">Questions, suggestions, comments? You can reach me at <a href="mailto:trevor@trvrj.com">trevor@trvrj.com</a>.</p>
+        <hr class="section-divider">
+
+        <p class="tagline info-text footer-tagline">Questions, suggestions, comments? You can reach me at <a href="mailto:trevor@trvrj.com">trevor@trvrj.com</a>.</p>
         
         <p class="footer-links"><a href="privacy-policy.html">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="terms-of-service.html">Terms of Service</a></p>
 
@@ -149,6 +132,104 @@
         </section>
     </main>
 
+    <!-- Bottom Sheet for Apps -->
+    <div id="appBottomSheetBackdrop" class="bottom-sheet-backdrop" onclick="closeAppBottomSheet()"></div>
+    <div id="appBottomSheet" class="bottom-sheet">
+        <button class="bottom-sheet-close" onclick="closeAppBottomSheet()" aria-label="Close bottom sheet">&times;</button>
+        <div class="bottom-sheet-content">
+            <!-- Adaman -->
+            <div id="sheet-adaman" class="sheet-app-detail" hidden>
+                <h3 class="app-name">Adaman</h3>
+                <p class="description">A Decktet game for one player. The Decktet is a custom playing card set created by P. H. Magnus.<br>Check it out: <a href="https://www.decktet.com" target="_blank" rel="noopener noreferrer">https://www.decktet.com</a></p>
+                <div class="screenshots">
+                    <img src="assets/adaman screenshots/adaman 01.png" alt="Adaman Screenshot 1" onclick="openModal(this)">
+                    <img src="assets/adaman screenshots/adaman 02.png" alt="Adaman Screenshot 2" onclick="openModal(this)">
+                    <img src="assets/adaman screenshots/adaman 03.png" alt="Adaman Screenshot 3" onclick="openModal(this)">
+                </div>
+                <div class="get-it-on">
+                    <p>Check it out in the app stores</p>
+                    <div class="store-badges">
+                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.adaman&hl=en-US" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
+                        <a href="https://apps.apple.com/us/app/adaman/id6756248997" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duos -->
+            <div id="sheet-duos" class="sheet-app-detail" hidden>
+                <h3 class="app-name">Duos Name Generator</h3>
+                <p class="description">An app that generates word pairs for naming things. Inspired by the Flutter tutorial by Filip Hráček.<br>Check out his other work: <a href="https://filiph.net" target="_blank" rel="noopener noreferrer">https://filiph.net</a></p>
+                <div class="screenshots duos-screenshots">
+                    <img src="assets/duos screenshots/canvas-1.png" alt="Duos Name Generator Screenshot 1" onclick="openModal(this)">
+                    <img src="assets/duos screenshots/canvas-2.png" alt="Duos Name Generator Screenshot 2" onclick="openModal(this)">
+                    <img src="assets/duos screenshots/canvas-4.png" alt="Duos Name Generator Screenshot 4" onclick="openModal(this)">
+                </div>
+                <div class="get-it-on">
+                    <p>Check it out in the app stores</p>
+                    <div class="store-badges">
+                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.duos.freemium" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
+                        <a href="https://apps.apple.com/us/app/duos-name-generator/id6753549201" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bastion -->
+            <div id="sheet-bastion" class="sheet-app-detail" hidden>
+                <h3 class="app-name">Bastion Password Manager</h3>
+                <p class="description">A robust, offline password manager focused on speed, for those who prefer not to use autopay or save their passwords in browsers.</p>
+                <div class="screenshots bastion-screenshots">
+                    <img src="assets/bastion screenshots/bastion goog 01.png" alt="Bastion Password Manager Screenshot 1" onclick="openModal(this)">
+                    <img src="assets/bastion screenshots/bastion goog 03.png" alt="Bastion Password Manager Screenshot 2" onclick="openModal(this)">
+                    <img src="assets/bastion screenshots/bastion goog 05.png" alt="Bastion Password Manager Screenshot 3" onclick="openModal(this)">
+                </div>
+                <div class="get-it-on">
+                    <p>Check it out in the app stores</p>
+                    <div class="store-badges">
+                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.bastion" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
+                        <a href="https://apps.apple.com/us/app/bastion-password-manager/id6759344926" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trovebook -->
+            <div id="sheet-trovebook" class="sheet-app-detail" hidden>
+                <h3 class="app-name">Trovebook</h3>
+                <p class="description">Categorize and manage your data as inventories.</p>
+                <div class="screenshots trovebook-screenshots">
+                    <img src="assets/trovebook screenshots/android store 1.png" alt="Trovebook Screenshot 1" onclick="openModal(this)">
+                    <img src="assets/trovebook screenshots/android store 3.png" alt="Trovebook Screenshot 2" onclick="openModal(this)">
+                    <img src="assets/trovebook screenshots/android store 5.png" alt="Trovebook Screenshot 3" onclick="openModal(this)">
+                </div>
+                <div class="get-it-on">
+                    <p>Check it out in the app stores</p>
+                    <div class="store-badges">
+                        <a href="https://play.google.com/store/apps/details?id=com.trvrj.trovebook" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/Google Play logo.png" alt="Get it on Google Play" class="store-badge"></a>
+                        <a href="https://apps.apple.com/us/app/trovebook-inventory-tracker/id6767795666" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typer Tool -->
+            <div id="sheet-typer" class="sheet-app-detail" hidden>
+                <h3 class="app-name">Typer Tool</h3>
+                <p class="description">Create a personal writing environment on your website that saves and loads your work from a database. (Bottom screenshot taken from a laptop.)</p>
+                <div class="screenshots typer-mobile-row">
+                    <img src="assets/typer screenshots/mobile focus.png" alt="Typer mobile focus screenshot" onclick="openModal(this)">
+                    <img src="assets/typer screenshots/mobile menu.png" alt="Typer mobile menu screenshot" onclick="openModal(this)">
+                </div>
+                <div class="screenshots typer-pc-row">
+                    <img src="assets/typer screenshots/pc focus.png" alt="Typer PC focus screenshot" onclick="openModal(this)">
+                </div>
+                <div class="get-it-on">
+                    <p>Check it out on GitHub</p>
+                    <div class="store-badges">
+                        <a href="https://github.com/trvrj/typer-tool" target="_blank" rel="noopener noreferrer"><img src="assets/app icons/github icon.png" alt="Download on GitHub" class="store-badge"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal for enlarged images -->
     <div id="imageModal" class="modal" onclick="closeModal()">
         <span class="close" onclick="closeModal()">&times;</span>
@@ -159,21 +240,68 @@
         function openModal(img) {
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
-            modal.style.display = 'block';
             modalImg.src = img.src;
             modalImg.alt = img.alt;
+            modal.style.display = 'block';
+            modal.offsetHeight; // Force reflow
+            modal.classList.add('active');
         }
 
         function closeModal() {
             const modal = document.getElementById('imageModal');
-            modal.style.display = 'none';
+            modal.classList.remove('active');
+            setTimeout(() => {
+                if (!modal.classList.contains('active')) {
+                    modal.style.display = 'none';
+                }
+            }, 300); // Wait for transition (300ms) to finish
         }
 
-        // Close modal when pressing Escape key
+        function openAppBottomSheet(appId) {
+            const details = document.querySelectorAll('.sheet-app-detail');
+            details.forEach(detail => detail.hidden = true);
+            
+            const targetDetail = document.getElementById('sheet-' + appId);
+            if (targetDetail) {
+                targetDetail.hidden = false;
+            }
+            
+            document.getElementById('appBottomSheetBackdrop').classList.add('active');
+            document.getElementById('appBottomSheet').classList.add('active');
+            document.body.classList.add('bottom-sheet-open');
+        }
+
+        function closeAppBottomSheet() {
+            document.getElementById('appBottomSheetBackdrop').classList.remove('active');
+            document.getElementById('appBottomSheet').classList.remove('active');
+            document.body.classList.remove('bottom-sheet-open');
+        }
+
+        // Close modal or bottom sheet when pressing Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
+                closeAppBottomSheet();
             }
+        });
+
+        // Wire up app grid items & tool buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            const appBtns = document.querySelectorAll('.app-grid-item');
+            appBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const appId = btn.getAttribute('data-app');
+                    openAppBottomSheet(appId);
+                });
+            });
+
+            const toolBtns = document.querySelectorAll('.tool-btn');
+            toolBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const toolId = btn.getAttribute('data-tool');
+                    openAppBottomSheet(toolId);
+                });
+            });
         });
     </script>
     <script type="module" src="scripts/visitTracker.js"></script>

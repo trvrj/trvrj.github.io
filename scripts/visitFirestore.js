@@ -2,6 +2,7 @@ import {
     Timestamp,
     addDoc,
     collection,
+    getCountFromServer,
     getDocs,
     limit,
     orderBy,
@@ -46,4 +47,9 @@ export async function listRecentSiteVisits(maxItems = 100) {
     const q = query(siteVisitsCollectionRef(), orderBy("timestamp", "desc"), limit(capped));
     const snap = await getDocs(q);
     return snap.docs.map((item) => ({ id: item.id, ...item.data() }));
+}
+
+export async function getTotalSiteVisits() {
+    const countSnap = await getCountFromServer(query(siteVisitsCollectionRef()));
+    return Number(countSnap.data()?.count ?? 0);
 }
