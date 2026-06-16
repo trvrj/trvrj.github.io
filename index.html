@@ -12,6 +12,52 @@
 
         <hr class="section-divider">
 
+        <h2 class="section-heading">&lt; Apps &gt;</h2>
+        <div class="apps-grid">
+            <button type="button" class="app-grid-item" data-app="adaman" aria-label="Open Adaman details">
+                <img src="assets/app icons/adaman icon.png" alt="Adaman icon" class="app-grid-icon">
+                <span class="app-grid-label">Adaman</span>
+            </button>
+            <button type="button" class="app-grid-item" data-app="duos" aria-label="Open Duos details">
+                <img src="assets/app icons/Duos app icon.png" alt="Duos Name Generator icon" class="app-grid-icon">
+                <span class="app-grid-label">Duos Name Generator</span>
+            </button>
+            <button type="button" class="app-grid-item" data-app="bastion" aria-label="Open Bastion details">
+                <img src="assets/app icons/new bastion logo (1).png" alt="Bastion Password Manager icon" class="app-grid-icon">
+                <span class="app-grid-label">Bastion Password Manager</span>
+            </button>
+            <button type="button" class="app-grid-item" data-app="trovebook" aria-label="Open Trovebook details">
+                <img src="assets/app icons/trovebook icon.png" alt="Trovebook icon" class="app-grid-icon">
+                <span class="app-grid-label">Trovebook</span>
+            </button>
+            <button type="button" class="app-grid-item" data-app="wordparley" aria-label="Open Word Parley details">
+                <img src="assets/app icons/word parley icon.png" alt="Word Parley icon" class="app-grid-icon">
+                <span class="app-grid-label">Word Parley</span>
+            </button>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-heading">&lt; Tools &gt;</h2>
+        <div class="tool-item">
+            <button type="button" class="tool-btn" data-tool="typer" aria-label="Open Typer Tool details">
+                <img src="assets/app icons/github icon.png" alt="GitHub icon" class="tool-icon">
+                <span class="tool-name">Typer Tool</span>
+            </button>
+            <p class="tool-description">Create a personal writing environment on your website that saves and loads your work from a database. (Bottom screenshot taken from a laptop.)</p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-heading">&lt; Projects &gt;</h2>
+        <ul>
+            <li><span class="app-name">Conclave of Crowns</span><br><span class="description">A terminal, command-line-style game played with standard playing cards.</span></li>
+            <li><span class="app-name">Text adventure game</span><br><span class="description">I don't know precisely what the story will be yet, but working on getting the engine built and running correctly.</span></li>
+            <li><span class="app-name">1v1 matchmaking word game</span><br><span class="description">This is very early, but I'm playing around with designing a word game, because who doesn't love word games?</span></li>
+        </ul>
+
+        <hr class="section-divider">
+
         <section class="feedback-form-section home-feedback-form-section">
             <h2>&lt; Submit Feedback &gt;</h2>
             <p class="info-text feedback-view-link"><a href="feedback/">View feedback</a></p>
@@ -73,45 +119,44 @@
 
         <hr class="section-divider">
 
-        <h2 class="section-heading">&lt; Apps &gt;</h2>
-        <div class="apps-grid">
-            <button type="button" class="app-grid-item" data-app="adaman" aria-label="Open Adaman details">
-                <img src="assets/app icons/adaman icon.png" alt="Adaman icon" class="app-grid-icon">
-                <span class="app-grid-label">Adaman</span>
+        <section id="data-removal" class="feedback-form-section home-data-form-section">
+            <h2>&lt; Data &gt;</h2>
+            <p class="info-text">To request your account data be removed from an app, enter your email address and choose the app in the form below.</p>
+            <button
+                id="homeDataToggleBtn"
+                class="feedback-toggle-btn"
+                type="button"
+                aria-expanded="false"
+                aria-controls="homeDataPanel"
+            >
+                Expand form
             </button>
-            <button type="button" class="app-grid-item" data-app="duos" aria-label="Open Duos details">
-                <img src="assets/app icons/Duos app icon.png" alt="Duos Name Generator icon" class="app-grid-icon">
-                <span class="app-grid-label">Duos Name Generator</span>
-            </button>
-            <button type="button" class="app-grid-item" data-app="bastion" aria-label="Open Bastion details">
-                <img src="assets/app icons/new bastion logo (1).png" alt="Bastion Password Manager icon" class="app-grid-icon">
-                <span class="app-grid-label">Bastion Password Manager</span>
-            </button>
-            <button type="button" class="app-grid-item" data-app="trovebook" aria-label="Open Trovebook details">
-                <img src="assets/app icons/trovebook icon.png" alt="Trovebook icon" class="app-grid-icon">
-                <span class="app-grid-label">Trovebook</span>
-            </button>
-        </div>
+            <div id="homeDataPanel" hidden>
+                <form id="dataRemovalForm" class="feedback-form">
+                    <div class="feedback-field">
+                        <label for="dataApp">App</label>
+                        <select id="dataApp" name="app" required>
+                            <option value="wordparley">Word Parley</option>
+                        </select>
+                    </div>
 
-        <hr class="section-divider">
+                    <div class="feedback-field">
+                        <label for="dataName">Name</label>
+                        <input id="dataName" name="name" type="text" maxlength="80" required>
+                    </div>
 
-        <h2 class="section-heading">&lt; Tools &gt;</h2>
-        <div class="tool-item">
-            <button type="button" class="tool-btn" data-tool="typer" aria-label="Open Typer Tool details">
-                <img src="assets/app icons/github icon.png" alt="GitHub icon" class="tool-icon">
-                <span class="tool-name">Typer Tool</span>
-            </button>
-            <p class="tool-description">Create a personal writing environment on your website that saves and loads your work from a database. (Bottom screenshot taken from a laptop.)</p>
-        </div>
+                    <div class="feedback-field">
+                        <label for="dataEmail">Email</label>
+                        <input id="dataEmail" name="email" type="email" maxlength="160" required>
+                    </div>
 
-        <hr class="section-divider">
-
-        <h2 class="section-heading">&lt; Projects &gt;</h2>
-        <ul>
-            <li><span class="app-name">Conclave of Crowns</span><br><span class="description">A terminal, command-line-style game played with standard playing cards.</span></li>
-            <li><span class="app-name">Text adventure game</span><br><span class="description">I don't know precisely what the story will be yet, but working on getting the engine built and running correctly.</span></li>
-            <li><span class="app-name">1v1 matchmaking word game</span><br><span class="description">This is very early, but I'm playing around with designing a word game, because who doesn't love word games?</span></li>
-        </ul>
+                    <div class="feedback-submit-row">
+                        <button type="submit" id="dataSubmitBtn">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <p id="dataFormStatus" class="info-text" aria-live="polite"></p>
+        </section>
 
         <hr class="section-divider">
 
@@ -207,6 +252,12 @@
                         <a href="https://apps.apple.com/us/app/trovebook-inventory-tracker/id6767795666" target="_blank" rel="noopener noreferrer"><img src="assets/app store logos/App Store logo.png" alt="Download on the App Store" class="store-badge"></a>
                     </div>
                 </div>
+            </div>
+
+            <!-- Word Parley -->
+            <div id="sheet-wordparley" class="sheet-app-detail" hidden>
+                <h3 class="app-name">Word Parley</h3>
+                <p class="description">A turn-based multiplayer word game about hidden words, deduction, and momentum. Includes a Pass and Play local mode.</p>
             </div>
 
             <!-- Typer Tool -->
@@ -306,5 +357,6 @@
     </script>
     <script type="module" src="scripts/visitTracker.js"></script>
     <script type="module" src="scripts/feedbackPage.js"></script>
+    <script type="module" src="scripts/dataPage.js"></script>
 </body>
 </html>
