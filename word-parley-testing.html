@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Parley Closed Testing - Trevor Johnson</title>
+    <link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body>
+    <main>
+        <p class="info-text"><a href="index.html">Back to Home</a></p>
+
+        <section class="feedback-form-section">
+            <h2>&lt; Word Parley Closed Testing &gt;</h2>
+            <p class="info-text">Enter your bug reports, feature requests, or general testing feedback below.</p>
+            
+            <form id="testingFeedbackForm" class="feedback-form">
+                <div class="feedback-field">
+                    <textarea id="feedbackText" rows="8" placeholder="Enter closed testing feedback here..." required style="width: 100%; box-sizing: border-box; resize: vertical;"></textarea>
+                </div>
+                <div class="feedback-submit-row">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </section>
+
+        <hr class="section-divider">
+
+        <section>
+            <h2>&lt; Submitted Feedback &gt;</h2>
+            <div id="feedbackList" class="feedback-list">
+                <!-- Submitted feedback will appear here in reverse chronological order -->
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="scripts/visitTracker.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('testingFeedbackForm');
+            const textarea = document.getElementById('feedbackText');
+            const feedbackList = document.getElementById('feedbackList');
+
+            let feedbackEntries = [];
+
+            // Load existing feedback from localStorage
+            try {
+                const storedFeedback = localStorage.getItem('word_parley_closed_testing_feedback');
+                if (storedFeedback) {
+                    feedbackEntries = JSON.parse(storedFeedback);
+                }
+            } catch (e) {
+                console.error('Error loading feedback from localStorage:', e);
+            }
+
+            // Function to format timestamp in Central Time Zone as HH:MM MM/DD/YYYY
+            function getCentralTimeFormatted() {
+                const d = new Date();
+                try {
+                    const formatter = new Intl.DateTimeFormat('en-US', {
+                        timeZone: 'America/Chicago',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hourCycle: 'h23',
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: 'numeric'
+                    });
+                    
+                    const parts = formatter.formatToParts(d);
+                    let hh = '', mm = '', month = '', day = '', yyyy = '';
+                    
+                    for (const part of parts) {
+                        if (part.type === 'hour') hh = part.value;
+                        else if (part.type === 'minute') mm = part.value;
+                        else if (part.type === 'month') month = part.value;
+                        else if (part.type === 'day') day = part.value;
+                        else if (part.type === 'year') yyyy = part.value;
+                    }
+                    
+                    return `${hh}:${mm} ${month}/${day}/${yyyy}`;
+                } catch (err) {
+                    // Fallback to local time in case Intl or timeZone is unsupported
+                    const pad = (n) => String(n).padStart(2, '0');
+                    const hh = pad(d.getHours());
+                    const mm = pad(d.getMinutes());
+                    const month = pad(d.getMonth() + 1);
+                    const day = pad(d.getDate());
+                    const yyyy = d.getFullYear();
+                    return `${hh}:${mm} ${month}/${day}/${yyyy}`;
+                }
+            }
+
+            // Render all feedback entries (newest at the top)
+            function renderFeedback() {
+                feedbackList.innerHTML = '';
+                if (feedbackEntries.length === 0) {
+                    feedbackList.innerHTML = '<p class="info-text" style="color: #6b7280; font-style: italic; margin-top: 10px;">No feedback submitted yet.</p>';
+                    return;
+                }
+
+                feedbackEntries.forEach(entry => {
+                    const container = document.createElement('div');
+                    container.className = 'feedback-item';
+                    container.style.marginBottom = '16px';
+
+                    const textPara = document.createElement('p');
+                    textPara.textContent = entry.text;
+                    textPara.style.whiteSpace = 'pre-wrap';
+                    textPara.style.margin = '0 0 10px 0';
+                    textPara.style.wordBreak = 'break-word';
+
+                    const footer = document.createElement('div');
+                    footer.style.display = 'flex';
+                    footer.style.justifyContent = 'space-between';
+                    footer.style.alignItems = 'center';
+                    footer.style.marginTop = '10px';
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.style.background = 'none';
+                    deleteBtn.style.border = 'none';
+                    deleteBtn.style.color = '#ef4444';
+                    deleteBtn.style.cursor = 'pointer';
+                    deleteBtn.style.padding = '0';
+                    deleteBtn.style.fontSize = '10pt';
+                    deleteBtn.style.fontFamily = 'inherit';
+                    deleteBtn.addEventListener('click', () => {
+                        deleteEntry(entry.id);
+                    });
+
+                    const timePara = document.createElement('p');
+                    timePara.textContent = entry.timestamp;
+                    timePara.className = 'info-text';
+                    timePara.style.margin = '0';
+                    timePara.style.color = '#9ca3af';
+                    timePara.style.textAlign = 'right';
+
+                    footer.appendChild(deleteBtn);
+                    footer.appendChild(timePara);
+
+                    container.appendChild(textPara);
+                    container.appendChild(footer);
+                    feedbackList.appendChild(container);
+                });
+            }
+
+            function deleteEntry(id) {
+                feedbackEntries = feedbackEntries.filter(entry => entry.id !== id);
+                try {
+                    localStorage.setItem('word_parley_closed_testing_feedback', JSON.stringify(feedbackEntries));
+                } catch (err) {
+                    console.error('Error saving feedback to localStorage:', err);
+                }
+                renderFeedback();
+            }
+
+            // Handle form submission
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const text = textarea.value.trim();
+                if (!text) return;
+
+                const timestamp = getCentralTimeFormatted();
+                const newEntry = {
+                    id: Date.now(),
+                    text: text,
+                    timestamp: timestamp
+                };
+
+                // Add to the front of the array (reverse chronological order)
+                feedbackEntries.unshift(newEntry);
+
+                // Save to localStorage
+                try {
+                    localStorage.setItem('word_parley_closed_testing_feedback', JSON.stringify(feedbackEntries));
+                } catch (err) {
+                    console.error('Error saving feedback to localStorage:', err);
+                }
+
+                // Reset input and update display
+                textarea.value = '';
+                renderFeedback();
+            });
+
+            // Initial render
+            renderFeedback();
+        });
+    </script>
+</body>
+</html>

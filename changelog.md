@@ -65,5 +65,8 @@ added thin divider line between sections, refactored the apps section and the to
 fixed 2 text buttons in mobile view (hopefully)
 
 1.3.7+40 (Lenovo - 6.16.26)
-
 add new word parley app to list with bottom sheet, add new data section with form for user to request account data deletion from app that sends email directly to me when submitted, updated the privacy policy page to reflect the new account deletion process
+
+1.3.8+41 - (Lenovo - 7.4.26)
+added an option for testers to leave feedback from the settings menu in the app during closed testing
+
