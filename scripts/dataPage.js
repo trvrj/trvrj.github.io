@@ -1,4 +1,4 @@
-const DATA_REMOVAL_EMAIL = "trevor@trvrj.com";
+const DATA_REMOVAL_EMAIL = "support@trvrj.com";
 
 const APP_LABELS = {
     wordparley: "Word Parley",
@@ -22,37 +22,13 @@ function setHomeDataPanelExpanded(isExpanded) {
     homeDataToggleBtn.textContent = isExpanded ? "Collapse form" : "Expand form";
 }
 
-function formatCentralDate(date) {
-    return new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Chicago",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-    }).format(date);
-}
-
-function formatCentralTime(date) {
-    return new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Chicago",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-    }).format(date);
-}
-
 function buildDataRemovalEmail({ name, appName, email }) {
-    const now = new Date();
-    const date = formatCentralDate(now);
-    const time = formatCentralTime(now);
-
     const subject = `Data removal request - ${appName}`;
     const body = [
         `The user, ${name}, wishes to remove their data from ${appName}.`,
         "",
         email,
-        "",
-        `Submitted ${date} at ${time}.`,
-    ].join("\n");
+    ].join("\r\n");
 
     return { subject, body };
 }

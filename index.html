@@ -34,9 +34,9 @@
                 <img src="assets/app icons/trovebook icon.png" alt="Trovebook icon" class="app-grid-icon">
                 <span class="app-grid-label">Trovebook</span>
             </button>
-            <button type="button" class="app-grid-item" data-app="wordparley" aria-label="Open Word Parley details">
-                <img src="assets/app icons/word parley icon.png" alt="Word Parley icon" class="app-grid-icon">
-                <span class="app-grid-label">Word Parley</span>
+            <button type="button" class="app-grid-item" data-app="milquetoast" aria-label="Open milquetoast details">
+                <img src="assets/app icons/milquetoast icon.png" alt="milquetoast icon" class="app-grid-icon">
+                <span class="app-grid-label">milquetoast</span>
             </button>
         </div>
 
@@ -69,14 +69,12 @@
 
         <section class="feedback-form-section home-feedback-form-section">
             <h2>&lt; Submit Feedback &gt;</h2>
-            <p class="info-text feedback-view-link"><a href="feedback/">View feedback</a></p>
             <button id="homeFeedbackToggleBtn" class="feedback-toggle-btn" type="button" aria-expanded="false"
                 aria-controls="homeFeedbackPanel">
                 Expand form
             </button>
             <div id="homeFeedbackPanel" hidden>
-                <p class="info-text">Share a bug report, feature request, or general feedback. Include your name and
-                    comment. Email is optional in case I need to follow up for clarity.</p>
+                <p class="info-text">Share a bug report, feature request, or general feedback.</p>
                 <form id="feedbackForm" class="feedback-form">
                     <div class="feedback-field">
                         <label for="feedbackApp">App</label>
@@ -86,17 +84,13 @@
                             <option value="duos">Duos Name Generator</option>
                             <option value="bastion">Bastion Password Manager</option>
                             <option value="trovebook">Trovebook</option>
+                            <option value="milquetoast">milquetoast</option>
                         </select>
                     </div>
 
                     <div class="feedback-field">
                         <label for="feedbackName">Name</label>
                         <input id="feedbackName" name="name" type="text" maxlength="80" required>
-                    </div>
-
-                    <div class="feedback-field">
-                        <label for="feedbackEmail">Email (optional)</label>
-                        <input id="feedbackEmail" name="email" type="email" maxlength="160">
                     </div>
 
                     <div class="feedback-field">
@@ -161,8 +155,6 @@
 
         <hr class="section-divider">
 
-        <p class="tagline info-text footer-tagline">Questions, suggestions, comments? You can reach me at <a
-                href="mailto:trevor@trvrj.com">trevor@trvrj.com</a>.</p>
 
         <p class="footer-links"><a href="privacy-policy.html">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
                 href="terms-of-service.html">Terms of Service</a></p>
@@ -287,11 +279,10 @@
                 </div>
             </div>
 
-            <!-- Word Parley -->
-            <div id="sheet-wordparley" class="sheet-app-detail" hidden>
-                <h3 class="app-name">Word Parley</h3>
-                <p class="description">A turn-based multiplayer word game about hidden words, deduction, and momentum.
-                    Includes a Pass and Play local mode and an online multiplayer mode.</p>
+            <!-- milquetoast -->
+            <div id="sheet-milquetoast" class="sheet-app-detail" hidden>
+                <h3 class="app-name">milquetoast</h3>
+                <p class="description">A writing app for writers who have trouble with the first draft. Focus on a small chunk of your story (a milestone), get something down that works or that you're happy with (for the time being), and move on.</p>
             </div>
 
             <!-- Typer Tool -->
@@ -394,9 +385,8 @@
             });
         });
     </script>
-    <script type="module" src="scripts/visitTracker.js"></script>
-    <script type="module" src="scripts/feedbackPage.js"></script>
-    <script type="module" src="scripts/dataPage.js"></script>
+    <script type="module" src="scripts/feedbackPage.js?v=4"></script>
+    <script type="module" src="scripts/dataPage.js?v=3"></script>
 </body>
 
 </html>

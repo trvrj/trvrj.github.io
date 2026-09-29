@@ -48,6 +48,7 @@ async function beginSignIn(method = "auto") {
         setStatus("Signing in...");
         await signInWithGoogle({ method });
     } catch (error) {
+        console.error("Firebase sign-in error:", error);
         setStatus(describeAuthError(error));
     }
 }

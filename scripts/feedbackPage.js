@@ -1,15 +1,20 @@
-import { isFirebaseConfigured, firebaseConfigError } from "./firebaseClient.js";
-import { submitFeedback } from "./feedbackFirestore.js";
+const FEEDBACK_EMAIL = "contact@trvrj.com";
 
 const APP_LABELS = {
-    duos: "Duos Name Generator",
     adaman: "Adaman",
+    duos: "Duos Name Generator",
     bastion: "Bastion Password Manager",
     trovebook: "Trovebook",
+    milquetoast: "milquetoast",
+};
+
+const TYPE_LABELS = {
+    feature_request: "Feature request",
+    bug_report: "Bug report",
+    general_feedback: "General feedback",
 };
 
 const form = document.getElementById("feedbackForm");
-const submitButton = document.getElementById("feedbackSubmitBtn");
 const statusEl = document.getElementById("feedbackFormStatus");
 const homeFeedbackToggleBtn = document.getElementById("homeFeedbackToggleBtn");
 const homeFeedbackPanel = document.getElementById("homeFeedbackPanel");
@@ -21,12 +26,6 @@ const OWNER_PIN = "1881";
 function setStatus(message) {
     if (!statusEl) return;
     statusEl.textContent = message;
-}
-
-function setSubmitting(isSubmitting) {
-    if (!submitButton) return;
-    submitButton.disabled = isSubmitting;
-    submitButton.textContent = isSubmitting ? "Submitting..." : "Submit";
 }
 
 function setHomeFeedbackPanelExpanded(isExpanded) {
@@ -66,36 +65,32 @@ if (ownerPinInput && ownerLinks) {
     });
 }
 
-if (form) {
-    if (!isFirebaseConfigured) {
-        setStatus(firebaseConfigError);
-    }
+function buildFeedbackEmail({ appName, name, feedbackType, comment }) {
+    const subject = `Feedback - ${appName}`;
+    const cleanComment = comment.replace(/\r?\n/g, "\r\n");
+    const body = `${appName}\r\n${name}\r\n${feedbackType}\r\n\r\n${cleanComment}`;
+    return { subject, body };
+}
 
-    form.addEventListener("submit", async (event) => {
+if (form) {
+    form.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!isFirebaseConfigured) {
-            setStatus(firebaseConfigError);
-            return;
-        }
 
         const appId = form.feedbackApp?.value ?? "";
-        const appLabel = APP_LABELS[appId] ?? "";
-        const username = form.feedbackName?.value ?? "";
-        const email = form.feedbackEmail?.value ?? "";
-        const type = form.feedbackType?.value ?? "";
-        const comment = form.feedbackComment?.value ?? "";
+        const appName = APP_LABELS[appId] ?? form.feedbackApp?.selectedOptions?.[0]?.textContent?.trim() ?? appId;
+        const name = form.feedbackName?.value?.trim() ?? "";
+        const typeValue = form.feedbackType?.value ?? "";
+        const feedbackType = TYPE_LABELS[typeValue] ?? form.feedbackType?.selectedOptions?.[0]?.textContent?.trim() ?? typeValue;
+        const comment = form.feedbackComment?.value?.trim() ?? "";
 
-        try {
-            setSubmitting(true);
-            setStatus("Submitting feedback...");
-            await submitFeedback({ appId, appLabel, username, email, type, comment });
-            form.reset();
-            setStatus("Thanks! Your feedback is pending review.");
-            setHomeFeedbackPanelExpanded(false);
-        } catch (error) {
-            setStatus(error?.message || "Could not submit feedback.");
-        } finally {
-            setSubmitting(false);
-        }
+        if (!appName || !name || !feedbackType || !comment) return;
+
+        const { subject, body } = buildFeedbackEmail({ appName, name, feedbackType, comment });
+        const mailtoUrl = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.location.href = mailtoUrl;
+        form.reset();
+        setHomeFeedbackPanelExpanded(false);
+        setStatus("Your email app should open with a pre-filled message. Send it to submit your feedback.");
     });
 }

@@ -70,3 +70,6 @@ add new word parley app to list with bottom sheet, add new data section with for
 1.3.8+41 - (Lenovo - 7.4.26)
 added an option for testers to leave feedback from the settings menu in the app during closed testing
 
+1.3.9+42 - (Lenovo - 9.29.26)
+remove view feedback page / site visitors tracking, dashboard with google login is now empty and ready for future tools, updated email addresses on feedback and data removal forms to use contact / support @trvrj.com
+
