@@ -73,3 +73,6 @@ added an option for testers to leave feedback from the settings menu in the app 
 1.3.9+42 - (Lenovo - 9.29.26)
 remove view feedback page / site visitors tracking, dashboard with google login is now empty and ready for future tools, updated email addresses on feedback and data removal forms to use contact / support @trvrj.com
 
+1.4.0+43 - (Lenovo - 10.23.26)
+updated milquetoast bottom sheet to display app screenshots and add play and app store links (apple link shows coming soon because app is still in review)
+

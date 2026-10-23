@@ -307,6 +307,10 @@ a:hover {
     gap: 16px;
 }
 
+.screenshots.milquetoast-screenshots {
+    gap: 16px;
+}
+
 /* Vertical screenshots layout (e.g., for landscape images) */
 .screenshots.vertical {
     flex-direction: column;
@@ -385,6 +389,65 @@ a:hover {
 
 .store-badge:hover {
     opacity: 0.8;
+}
+
+.store-badge-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: default;
+}
+
+.store-badge.coming-soon {
+    opacity: 0.7;
+    cursor: default;
+    transition: opacity 0.2s ease;
+}
+
+.store-badge-wrapper:hover .store-badge.coming-soon {
+    opacity: 0.95;
+}
+
+/* Tooltip on hover */
+.store-badge-wrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background-color: #1f2937;
+    color: #f9fafb;
+    font-size: 11px;
+    padding: 5px 9px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    border: 1px solid #374151;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+.store-badge-wrapper::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border-width: 5px 5px 0 5px;
+    border-style: solid;
+    border-color: #374151 transparent transparent transparent;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+}
+
+.store-badge-wrapper:hover::after,
+.store-badge-wrapper:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 /* Modal styles */
